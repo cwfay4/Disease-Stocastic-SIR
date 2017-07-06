@@ -178,7 +178,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
 	  
       if (conv){ 
 	     std::ofstream output("Disease_Conv.csv", ios_base::app);
-         output<<it<<" "<<(double)n_healthy/dn<<" "<<(double)n_sick/dn<<" "<<(double)n_immune/dn<<" "<<(double)n_dead/dn<<endl;
+         output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
 	     output.close();
       }
       if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;

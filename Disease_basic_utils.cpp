@@ -38,7 +38,28 @@ boolcat::boolcat(){
 
 void Disease_usage(bool verbose) {
   cout<<"Disease : Disease population \n";
-  cout<<"Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime [nkernal] "<<endl;
+  cout<<"   Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime"<<endl;
+  cout<<endl;
+  cout<<"   Output: original parameters and debug parameters "<<endl;
+  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[] lifetime=[] "<<endl;  
+  cout<<"   [n] [c] [seed] graph written as [graph name. gml]  "<<endl;    
+  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[]  "<<endl;
+  cout<<endl;  
+  cout<<"   Output file: Disease_Conv.csv [comma delinated]"<<endl;
+  cout<<"   [Iteration] [n_healthy] [n_sick] [n_immune] [n_dead]  "<<endl; 
+  cout<<endl;
+  cout<<"Disease_m : Disease population averaged over multiple graphs \n";
+  cout<<"   Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime"<<endl;
+  cout<<endl;
+//  cout<<"   Output: original parameters and debug parameters "<<endl;
+//  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[] lifetime=[] "<<endl;  
+//  cout<<"   [n] [c] [seed] graph written as [graph name. gml]  "<<endl;    
+//  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[]  "<<endl;
+//  cout<<endl;   
+  cout<<"   Output file: d+[n]+[bc]+[rnt]+ss.csv [comma delinated]"<<endl;
+  cout<<"   [n] [initial iteration value] [p_sick] [contagin] [fatality] [Immune] [lifetime] [nE] [c] [n_healthy] [n_Immune] [n_dead]"<<endl; 
+  cout<<endl;   
+  cout<<endl;  
   if (!verbose)
     cout<<"Type '%s -hv' for long help\n";
   else {
@@ -91,17 +112,27 @@ void Disease_usage(bool verbose) {
     cout<<"               (if comparing to a negative seed make [seed] positive)\n";
     cout<<"   -rgml [filename]: read gml format graph file  \n";
     cout<<endl;
-    cout<<"Output is of the form: \n";
-    cout<<"    n c seed1 seed2 seed3 c_actual nE \n";
-    cout<<"    sELoPR_covered_Fraction FrozenFraction \n";
-    cout<<"    bELoPR_covered_Fraction FrozenFraction \n";
+//    cout<<"Output is of the form: \n";
+//    cout<<"    n c seed1 seed2 seed3 c_actual nE \n";
+//    cout<<"    sELoPR_covered_Fraction FrozenFraction \n";
+//    cout<<"    bELoPR_covered_Fraction FrozenFraction \n";
     cout<<endl;
     cout<<"Variables: \n";
     cout<<"    n: number of nodes \n";
-    cout<<"    c: connectivity \n";
+    cout<<"    c: connectivity (average number of edges per node) \n";
     cout<<"    nsamples: number of graphs to sample \n";
-    cout<<"    c_actual: connectivity of graph \n";    
+    cout<<"    c_actual: connectivity of graph (average number of edges per node)\n";    
     cout<<"    nE: number of Edges in graph \n";
+    cout<<"    p_sick: intial number of immune as a probabilty  \n";
+    cout<<"    contagin: probabitly of getting sick \n";
+    cout<<"    fatality: probabilty of dying after getting sick \n"       
+    cout<<"    p_Immune: intial number of immune as a probabilty \n";
+    cout<<"    lifetime: lifetime of disease \n";
+    cout<<"    iteration: iteration step \n";
+    cout<<"    n_healthy: number healthy (fraction) \n";
+    cout<<"    n_sick: number sick (fraction) \n";
+    cout<<"    n_Immune: number Immune (fraction) \n";
+    cout<<"    n_dead: number dead (fraction) \n";
     cout<<endl;
     cout<<endl<<"DEFAULT OPTIONS: "<<endl;
     cout<<"    Graph type: ";
