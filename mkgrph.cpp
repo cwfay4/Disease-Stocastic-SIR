@@ -189,7 +189,8 @@ int main(int argc, char *argv[]){
   // sscanf(argv[argz++], "%lf", &p);
  //  seed = atoi(argv[argz++]) ;   
      if (debug_test) cout<<"Make graph tree output "<<g.grphtype<<" "<<prc<<" "<<num_nodes<<" "<<edge_prob<<" "<<seed<<std::endl; 
-    if (debug_test) cout<<"Make graph tree output "<<g.grphtype<<" "<<prc<<" "<<g.get_n()<<" "<<g.p<<" "<<seed<<std::endl; 
+  //  if (debug_test) cout<<"Make graph tree output "<<g.grphtype<<" "<<prc<<" "<<g.get_n()<<" "<<g.p<<" "<<seed<<std::endl; 
+     if (debug_test) g.set_debug(true);    
      if (g.grphtype==-1) g.read_gml(inputfile);
      else  {
 		 g.seed=seed;

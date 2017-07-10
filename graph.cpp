@@ -639,11 +639,11 @@ void graph::build_random_fixed_2(){
 	double dm = double(num_n)*c/2.0;
 	m =(unsigned long long)(dm+0.5);
 	mE = num_n*(num_n-1)/2;
-	
+	if(debug) cout<<" initialize ran3 ";
 	for (int i=0; i<1000; i++) float blank=ran3(&idum);  //initialize random
 	
 	nE =0;
-	
+	if(debug) cout<<" prepare to add edges ";
 	while (nE<m) {
 		l=gen_edge_number(mE, idum);
 		get_n1_n2_from_l(l, n1, n2);
@@ -669,7 +669,9 @@ void graph::build_random_fixed_2(){
 double graph::prob_staticSF(int n1, int n2, double norm) {
    double p_E;
 
-   p_E= (pow((double)n1,-p)/norm)*(pow((double)n2,-p)/norm);
+   //p_E= (pow((double)n1+1.0,-p)/norm)*(pow((double)n2+1.0,-p)/norm);
+   p_E= (pow((double)n1+1.0,-p)*pow((double)n2+1.0,-p))/(norm*norm);
+      //p_E= (pow((double)n1+1.0,p)/norm)*(pow((double)n2+1.0,p)/norm);
    return p_E;
 }
 /********************************************************************/
@@ -684,18 +686,23 @@ void graph::build_static_sclfr(){
 
    int n1, n2;
    populate_graph();
-	
+   if(debug) cout<<" populated ";	
    // initialize norm
    double norm=0;
    for (n1=0; n1<num_n; n1++){
-	   norm +=pow((double)n1, -p);
+	   norm +=pow((double)n1+1.0, -p);
+	  // norm +=pow((double)n1+1.0, p);
    }
+   if(debug) cout<<"norm: "<<norm<<" "<<p_E<<" ";
+   if (debug) p_E=prob_staticSF(1,0,norm);
+   if(debug) cout<<p_E<<" ";
   
-	
-	for (n1=1; n1<num_n; n1++){ //for all nodes
+	if(debug) cout<<" prepare to add edges ";	
+	for (n1=1; n1<=num_n; n1++){ //for all nodes
 		for (n2=0; n2<n1; n2++){ //for all nodes below n1
 			Rand=ran2(&idum);
-			p_E=prob_staticSF(n1,n1,norm);
+			p_E=prob_staticSF(n1,n2,norm);
+            if(debug) cout<<n1<<" "<<n2<<" "<<Rand<<" _"<<p_E<<" ";
 			if (Rand < p_E && nodes[n1].edges.size()<100 && nodes[n1].edges.size()<100){ //put in edge n1,n2
 				addEdge(n1,n2);
 				if(debug) cout<<"add edge "<<n1<<" "<<n2<<endl;
@@ -721,7 +728,9 @@ void graph::build_sclfr_grph(){
    float Rand;
    long idum=seed;     
  //  nE=0;
- 	
+    populate_graph();
+   if(debug) cout<<" populated ";	
+ 	if(debug) cout<<" prepare to add edges ";	  	
 	for (int n1=1; n1<num_n; n1++){ //for all nodes
 		for (int n2=0; n2<n1; n2++){ //for all nodes below n1 
 	        Rand=ran2(&idum);  
@@ -1026,7 +1035,7 @@ void graph::build_graph(bool write){
    clear();//this should make sure than when you construct a 
              //graph it is empty. It will still contain
 			 //the number of nodes
-   if (debug) cout<<" build graph subroutine "<<grphtype<<" "<<" "<<num_n<<" "<<p<<" "<<c<<" "<<seed<<std::endl; 
+   if (debug) cout<<" build graph subroutine  g.type:"<<grphtype<<"  N:"<<num_n<<" p:"<<p<<" c:"<<c<<" seed:"<<seed<<std::endl; 
    switch(grphtype){
 	  case 0:{
          if (p/((double)num_n-1)>.75) build_random_naive();
@@ -1060,11 +1069,13 @@ void graph::build_graph(bool write){
          break;		  
 	  }      
 	  case 6:{ //-sclf
+	      if(debug)cout<<"building sclf ";	  
 		  build_sclfr_grph();
           if(debug)cout<<"built sclf"<<endl;
         break;
 	  }      
 	  case 7:{ //-staticsclf
+		  
 		  build_static_sclfr();
           if(debug)cout<<"built sclf"<<endl;		  
           break;
