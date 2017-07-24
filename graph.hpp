@@ -63,8 +63,8 @@ class graph {
 	    unsigned long long gen_edge_number(unsigned long long maxE, long &idum);
 	    void get_n1_n2_from_l(unsigned long long l, int &n1, int &n2);
 	    void build_random_fixed_2();       //build a random graph with a fixed connectivity 
-        double prob_staticSF(int n1, int n2, double norm); //node connection probability
-	    void build_static_sclfr();  //static model  cond-mat/0312336
+	    double prob_staticSF(int n1, int n2, double norm, double alpha); //node connection probability
+	    void build_static_sclfr(double);  //static model  cond-mat/0312336
 	    double prob_PI(int n2);     //probability for scale free power law network
 	    void build_sclfr_grph();    //scale free power law network
 	    void build_barabosi_network(int nkernal); //builds barabosi network

@@ -103,7 +103,7 @@ int main(int argc, char *argv[]){
    double edge_prob=3.0, c=0.0, test_p;
    bool write=true, debug_test=true;  
    graph g;
-   
+   seed = (int)( time(NULL) );
    int dummy;
 
    std::stringstream ss;
@@ -116,6 +116,7 @@ int main(int argc, char *argv[]){
 	  ss.clear();
 	  ss.str(argv[i]);
       ss>>inputstr; 
+/*********************************************************************/
       if(inputstr.compare("-pt") == 0) g.grphtype=1;         //planar triangular graph
       else if(inputstr.compare("-ptr3") == 0) g.grphtype=2;   //planar triangular graph with ran3
       else if(inputstr.compare("-fcc") == 0) g.grphtype=3;   //FCC Lattice
@@ -124,9 +125,8 @@ int main(int argc, char *argv[]){
       else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
       else if(inputstr.compare("-staticsclf") == 0) g.grphtype=7;   //scale free Lattice      
       else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
-      else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
- //     else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
- //     	g.grphtype=8;
+//      else if(inputstr.compare("-bb") == 0) {                 //barabasi graph
+//     	g.grphtype=8;
 //	    i++;
 //		ss>>dummy;
 //		dummy=atoi(argv[i]);
@@ -152,6 +152,7 @@ int main(int argc, char *argv[]){
 	     g.grphtype=-1;
          if (debug_test) cout<<"You want to read the file "<<inputfile<<std::endl;
 	  }
+/*********************************************************************/	  
 	  else if(j==0){
 		  ss>>num_nodes;
 		  num_nodes=atoi(argv[i]);
@@ -188,8 +189,8 @@ int main(int argc, char *argv[]){
 //   n = atoi(argv[argz++]);
   // sscanf(argv[argz++], "%lf", &p);
  //  seed = atoi(argv[argz++]) ;   
-     if (debug_test) cout<<"Make graph tree output "<<g.grphtype<<" "<<prc<<" "<<num_nodes<<" "<<edge_prob<<" "<<seed<<std::endl; 
-  //  if (debug_test) cout<<"Make graph tree output "<<g.grphtype<<" "<<prc<<" "<<g.get_n()<<" "<<g.p<<" "<<seed<<std::endl; 
+     if (debug_test) cout<<"Make graph: grphtype "<<g.grphtype<<" "<<prc<<" "<<num_nodes<<" "<<edge_prob<<" "<<seed<<std::endl; 
+  //  if (debug_test) cout<<"Make graph "<<g.grphtype<<" "<<prc<<" "<<g.get_n()<<" "<<g.p<<" "<<seed<<std::endl; 
      if (debug_test) g.set_debug(true);    
      if (g.grphtype==-1) g.read_gml(inputfile);
      else  {

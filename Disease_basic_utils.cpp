@@ -125,7 +125,7 @@ void Disease_usage(bool verbose) {
     cout<<"    nE: number of Edges in graph \n";
     cout<<"    p_sick: intial number of immune as a probabilty  \n";
     cout<<"    contagin: probabitly of getting sick \n";
-    cout<<"    fatality: probabilty of dying after getting sick \n"       
+    cout<<"    fatality: probabilty of dying after getting sick \n";       
     cout<<"    p_Immune: intial number of immune as a probabilty \n";
     cout<<"    lifetime: lifetime of disease \n";
     cout<<"    iteration: iteration step \n";
