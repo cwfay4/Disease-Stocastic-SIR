@@ -54,12 +54,20 @@ class graph {
 	    void GenEdge(long &idum, int &r1, int &r2);  //create a random edge using ran0
 	    void GenEdge3(long &idum, int &r1, int &r2);//create a random edge using ran3
 	    void populate_graph(); 
+	    void populate_graph(int); 	    
 	    void build_random();               //build a random graph
+	    void build_random(int);
 	    void build_random_fixed();         //build a random graph with a fixed connectivity
 	    void build_random_naive();         //build a random graph testing all edges
+	    void build_random_naive(int);
 	    unsigned long long gen_edge_number(unsigned long long maxE, long &idum);
 	    void get_n1_n2_from_l(unsigned long long l, int &n1, int &n2);
 	    void build_random_fixed_2();       //build a random graph with a fixed connectivity 
+	    double prob_staticSF(int n1, int n2, double norm, double alpha); //node connection probability
+	    void build_static_sclfr(double);  //static model  cond-mat/0312336
+	    double prob_PI(int n2);     //probability for scale free power law network
+	    void build_sclfr_grph();    //scale free power law network
+	    void build_barabosi_network(int nkernal); //builds barabosi network
 	    void build_triangular_lattice();   //build a triangular lattice
 	    void build_fcc();                  //build a FCC lattice
 	    void build_square_lattice();       //build a squarte lattice

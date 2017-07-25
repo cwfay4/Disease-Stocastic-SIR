@@ -38,7 +38,28 @@ boolcat::boolcat(){
 
 void Disease_usage(bool verbose) {
   cout<<"Disease : Disease population \n";
-  cout<<"Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime [nkernal] "<<endl;
+  cout<<"   Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime"<<endl;
+  cout<<endl;
+  cout<<"   Output: original parameters and debug parameters "<<endl;
+  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[] lifetime=[] "<<endl;  
+  cout<<"   [n] [c] [seed] graph written as [graph name. gml]  "<<endl;    
+  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[]  "<<endl;
+  cout<<endl;  
+  cout<<"   Output file: Disease_Conv.csv [comma delinated]"<<endl;
+  cout<<"   [Iteration] [n_healthy] [n_sick] [n_immune] [n_dead]  "<<endl; 
+  cout<<endl;
+  cout<<"Disease_m : Disease population averaged over multiple graphs \n";
+  cout<<"   Usage: [-h][-rgml <filename>][GRAPHTYPE] n c p_sick contagin fatality p_Immune lifetime"<<endl;
+  cout<<endl;
+//  cout<<"   Output: original parameters and debug parameters "<<endl;
+//  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[] lifetime=[] "<<endl;  
+//  cout<<"   [n] [c] [seed] graph written as [graph name. gml]  "<<endl;    
+//  cout<<"   n=[] c=[] nE=[] p_sick=[] contagin=[] fatality=[] p_Immune=[]  "<<endl;
+//  cout<<endl;   
+  cout<<"   Output file: d+[n]+[bc]+[rnt]+ss.csv [comma delinated]"<<endl;
+  cout<<"   [n] [initial iteration value] [p_sick] [contagin] [fatality] [Immune] [lifetime] [nE] [c] [n_healthy] [n_Immune] [n_dead]"<<endl; 
+  cout<<endl;   
+  cout<<endl;  
   if (!verbose)
     cout<<"Type '%s -hv' for long help\n";
   else {
@@ -53,31 +74,34 @@ void Disease_usage(bool verbose) {
     cout<<"   -fcc: diluted fcc lattice using ran2 \n";
     cout<<"   -cubic: diluted cubic lattice using ran2 \n";
     cout<<"   -sq: diluted square lattice using ran2 \n";    
-    cout<<"   -sclf: scale free graph using ran2 (barabasi network?) \n";
+    cout<<"   -sclf: scale free graph using ran2\n";
+    cout<<"   -staticsclf: static scale free graph of the type from cond-mat/0312336 \n";     
     cout<<"   -rnd2: random graph sampling every edge using ran2 \n";
     cout<<"   -rnd3: using same procedure as the rf algorithm \n"; 
-    cout<<"   -bb [m]: barabasi network, m is integer number of nodes in kernal \n";
-    cout<<"            (c should be an integer as well)\n"; 
+//    cout<<"   -bb [m]: barabasi network, m is integer number of nodes in kernal \n";
+//    cout<<"            (c should be an integer as well)\n"; 
+    cout<<"   -bb barabasi network, 5% of nodes as part of the kernal \n";
+    cout<<"            (c should be an integer as well)\n";     
     cout<<"   -rf [m]: a random graph, connectivies are controlled so that c<=m \n";
     cout<<"   -rf_t2 [m]: a random graph, connectivies are controlled so that c<=m, different generator \n";
     cout<<"   -rf_64 [m]: a random graph, connectivies are controlled so that c<=m \n";
     cout<<"               optimized for a 64bit turion processor. \n";
-    cout<<"   -staticSF: static scale free graph of the type from cond-mat/0312336 \n";
-    cout<<"   -Ksat [m]: Ksat with m variables per clause,  and c clauses (not finished)\n"; 
+//    cout<<"   -staticSF: static scale free graph of the type from cond-mat/0312336 \n";
+//    cout<<"   -Ksat [m]: Ksat with m variables per clause,  and c clauses (not finished)\n"; 
     cout<<endl;   
     cout<<"   -bc0 : free boundary conditions (default)"<<endl;    
     cout<<"   -bc1 : periodic one one side (only option for 2-d graphs) \n";
     cout<<"   -bc2 : periodic on two sides \n"; 
-    cout<<"LoPR OPTIONS:"<<endl;   
-    cout<<"   -sb: site LoPR then bond LoPR \n";
-    cout<<"   -sb1: site LoPR then bond LoPR with one node list\n";    
-    cout<<"   -sDig: site LoPR then site based DIG \n"; 
-    cout<<"   -sDbD: site LoPR then site based DIG, bond LoPR then site based DIG\n";
-    cout<<"   -sDbD_1: site LoPR then site based DIG, bond LoPR then site based DIG\n"; 
-    cout<<"   -sDbD_m: site LoPR then site based DIG, bond LoPR then site based DIG\n";
-    cout<<"   -greedy: greedy cover by selection of a random node \n";
-    cout<<"   -Gmaxc: greedy cover by selection of the node with largest current connectivity\n";             
-    cout<<"GENERAL OPTIONS:"<<endl;
+//    cout<<"LoPR OPTIONS:"<<endl;   
+//    cout<<"   -sb: site LoPR then bond LoPR \n";
+//    cout<<"   -sb1: site LoPR then bond LoPR with one node list\n";    
+//    cout<<"   -sDig: site LoPR then site based DIG \n"; 
+//    cout<<"   -sDbD: site LoPR then site based DIG, bond LoPR then site based DIG\n";
+//    cout<<"   -sDbD_1: site LoPR then site based DIG, bond LoPR then site based DIG\n"; 
+//    cout<<"   -sDbD_m: site LoPR then site based DIG, bond LoPR then site based DIG\n";
+ //   cout<<"   -greedy: greedy cover by selection of a random node \n";
+//    cout<<"   -Gmaxc: greedy cover by selection of the node with largest current connectivity\n";             
+//    cout<<"GENERAL OPTIONS:"<<endl;
     cout<<"   -w: generate gml files of the graph. \n";
     cout<<"   -dsply: generate csv files that can be plotted to make a \n";
     cout<<"           visual output of the graph. \n";
@@ -88,17 +112,27 @@ void Disease_usage(bool verbose) {
     cout<<"               (if comparing to a negative seed make [seed] positive)\n";
     cout<<"   -rgml [filename]: read gml format graph file  \n";
     cout<<endl;
-    cout<<"Output is of the form: \n";
-    cout<<"    n c seed1 seed2 seed3 c_actual nE \n";
-    cout<<"    sELoPR_covered_Fraction FrozenFraction \n";
-    cout<<"    bELoPR_covered_Fraction FrozenFraction \n";
+//    cout<<"Output is of the form: \n";
+//    cout<<"    n c seed1 seed2 seed3 c_actual nE \n";
+//    cout<<"    sELoPR_covered_Fraction FrozenFraction \n";
+//    cout<<"    bELoPR_covered_Fraction FrozenFraction \n";
     cout<<endl;
     cout<<"Variables: \n";
     cout<<"    n: number of nodes \n";
-    cout<<"    c: connectivity \n";
+    cout<<"    c: connectivity (average number of edges per node) \n";
     cout<<"    nsamples: number of graphs to sample \n";
-    cout<<"    c_actual: connectivity of graph \n";    
+    cout<<"    c_actual: connectivity of graph (average number of edges per node)\n";    
     cout<<"    nE: number of Edges in graph \n";
+    cout<<"    p_sick: intial number of immune as a probabilty  \n";
+    cout<<"    contagin: probabitly of getting sick \n";
+    cout<<"    fatality: probabilty of dying after getting sick \n";       
+    cout<<"    p_Immune: intial number of immune as a probabilty \n";
+    cout<<"    lifetime: lifetime of disease \n";
+    cout<<"    iteration: iteration step \n";
+    cout<<"    n_healthy: number healthy (fraction) \n";
+    cout<<"    n_sick: number sick (fraction) \n";
+    cout<<"    n_Immune: number Immune (fraction) \n";
+    cout<<"    n_dead: number dead (fraction) \n";
     cout<<endl;
     cout<<endl<<"DEFAULT OPTIONS: "<<endl;
     cout<<"    Graph type: ";
@@ -133,26 +167,29 @@ void Disease_input(int argc, char *argv[], graph g, dPOP pop, boolcat b, int ITE
       else if(inputstr.compare("-fcc") == 0)  g.grphtype=3;  //FCC Lattice
       else if(inputstr.compare("-cubic") == 0)g.grphtype=4;  //cubic Lattice
       else if(inputstr.compare("-sq") == 0)   g.grphtype=5;  //squareLattice     
-      else if(inputstr.compare("-sclf") == 0) g.grphtype=6;  //scale free Lattice
-      else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;  //random Lattice type 2
-      else if(inputstr.compare("-bb") == 0) {                //barabasi scale free
-      	g.grphtype=8;
-	    i++;
-		ss>>dummy;
-		dummy=atoi(argv[i]);
-	    g.set_L(dummy);
+      else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
+      else if(inputstr.compare("-staticsclf") == 0) g.grphtype=7;   //scale free Lattice      
+      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
+      else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
+ //     else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
+ //     	g.grphtype=8;
+//	    i++;
+//		ss>>dummy;
+//		dummy=atoi(argv[i]);
+//	    g.set_L(dummy);
 	   // g.set_L(atoi(argv[argz]));
 	    //cout<<"nkernal: "<<L<<" ";
-	  }  
-      else if(inputstr.compare("-rndfixedc") == 0||inputstr.compare("-rf") ==0){ //random fixed connectivity
+//	  }
+      else if(inputstr.compare("-rndfixedc") == 0||inputstr.compare("-rf") ==0){          //random fixed connectivity
       	g.grphtype=9;
 	    i++;
 		ss>>dummy;
 		dummy=atoi(argv[i]);
 	    g.set_L(dummy);
-	    if (b.debug_test) cout<<"fixed maxc: "<<g.get_L()<<" ";
+	    cout<<"fixed maxc: "<<g.get_L()<<" ";
 	  }
-      else if(inputstr.compare("-rnd") == 0)        g.grphtype=0;   //random graph 
+      else if(inputstr.compare("-rnd2") == 0) g.grphtype=10;   //random Lattice type 2	  
+      else if(inputstr.compare("-rnd") == 0) g.grphtype=0;   //random graph   
       //************************End of Graph Types******************************** 
       //************************Boolean control***********************************
       else if(inputstr.compare("-w") == 0)       	b.write=true;

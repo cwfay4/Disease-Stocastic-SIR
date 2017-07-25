@@ -67,7 +67,7 @@ int graph::get_L(){
    return L;	
 }
 double graph::get_c(){
-	c=2.0*(double)nE/(double)num_n;
+	c=2.0*(double)nE/(double)nodes.size();
 	return c;
 }
 bool graph::get_debug(){
@@ -170,14 +170,26 @@ void graph::addNode(){
 	return;	
 }
 
-void graph::populate_graph(){
+void graph::populate_graph(){ //adding twice?
 	//cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;
-	while(num_n>nodes.size()){
+	while(num_n>nodes.size()){ //add nodes until num_n = nodes.size()
 		addNode();
 		
 	}
 	//cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;	
-	while(num_n<nodes.size()){
+	while(num_n<nodes.size()){ //remove nodes unitl num_n = nodes.size()
+		nodes.pop_back();
+	}
+    //cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;
+	return;
+}
+void graph::populate_graph(int nkernal){
+	//cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;
+	while(num_n>nkernal){
+		addNode();
+	}
+	//cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;	
+	while(num_n<nkernal){
 		nodes.pop_back();
 	}
     //cout<<endl<<" populate "<<num_n<<" "<<nodes.size()<<endl;
@@ -353,9 +365,10 @@ void graph::read_gml(string filename){
    return;
 }
 /***********************************************************************************/
+/******* Subroutines for Random graphs *********************************************/
 /***********************************************************************************/
 /***********************************************************************************/
-void graph::get_ij(int n1,int root, int& i,int& j){
+void graph::get_ij(int n1,int root, int& i,int& j){ //get (x,y) coordinate for a node 
 	double dj;
 	  dj=((double)(n1+1.0)/(double)root+0.9);
       j=(int)dj;
@@ -363,7 +376,7 @@ void graph::get_ij(int n1,int root, int& i,int& j){
       if (i==0) i=1;
    return;
 }
-void graph::dsplygrph(){
+void graph::dsplygrph(){ //output a graph into two csv files so they can be plotted
    int root, n2=0, n;
    int i, j, l, m;
    double sroot, dn;
@@ -373,14 +386,14 @@ void graph::dsplygrph(){
    sroot = sqrt(dn);                  
    root = (int) (sroot+0.5);
    
-   std::ofstream output1("displ1.csv");  
+   std::ofstream output1("displ1.csv");  //location of all nodes
    for (int n1=0; n1<n-1; n1++) { //for all nodes (i,j) for each node
       get_ij(n1,root,i,j);
       output1<<i<<" "<<j<<"\n";
    }   
    output1<<endl;
    output1.close(); 
-   std::ofstream output2("displ2.csv");
+   std::ofstream output2("displ2.csv");  //location of all edges
    for (int n1=0; n1<=n-1; n1++) { //for all edges
 	  for (unsigned int k=0; k<nodes[i].edges.size(); k++){
           n2=nodes[n1].edges[j];  
@@ -395,7 +408,8 @@ void graph::dsplygrph(){
    output2.close();
    return;
 }
-/***************************************************************************************************/
+/***********************************************************************************/
+/**** Generate a head and tail set *************************************************/
 void graph::GenEdge(long &idum, int &r1, int &r2){
    int l1,l2;
    double dl;
@@ -419,8 +433,8 @@ void graph::GenEdge(long &idum, int &r1, int &r2){
   /* cout<<r1<<" "<<r2<<endl;*/
    return;
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::GenEdge3(long &idum, int &r1, int &r2){
    int l1,l2;
    double dl;
@@ -444,17 +458,44 @@ void graph::GenEdge3(long &idum, int &r1, int &r2){
   /* cout<<r1<<" "<<r2<<endl;*/
    return;
 }
-
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/******** Generate m random edges in a graph ***************************************/
 void graph::build_random(){
 	long idum=seed;
 	double dm=(double)num_n*p/2.0;
-    int m=int(dm+0.5);
+	double dm_max=((double)(num_n*(num_n-1)))/2.0;
+    int m=int(dm+0.5), mmax=int(dm_max+0.5);
     bool no_edge=true;
     int n1, n2;
 	
 	populate_graph();	
+	
+	if (debug) cout<<" N:"<<num_n<<" no. Edges:"<<m<<" no. E max:"<<mmax<<" ";
+	if (m>mmax) m=mmax;
+	while (nE<m) {
+		GenEdge(idum, n1, n2);
+		//if (debug) cout<<idum<<" "<<n1<<" "<<n2<<" ";
+		no_edge=true;
+		for(int j=0; j<nodes[n1].edges.size(); j++){
+			if (nodes[n1].edges[j]==n2) no_edge=false;
+			//if (debug) cout<<" no edge "<<no_edge<<" "<<false<<" ";
+		}
+		if (no_edge) {
+			addEdge(n1,n2); //adds edge incriments nE++;
+		    //if (debug) cout<<"Add edge "<<n1<<" "<<n2<<" "<<nE<<" "<<m<<endl;
+		}
+	}
+    cout<<"End of build random _ no. Edges:"<<nE<<" ";
+    return;	
+}
+void graph::build_random(int nkernal){ //builds a random kernal
+	long idum=seed;
+	double dm=(double)nkernal*p/2.0;
+    int m=int(dm+0.5);
+    bool no_edge=true;
+    int n1, n2;
+	
+	populate_graph(nkernal);	
 	
 	while (nE<m) {
 		GenEdge(idum, n1, n2);
@@ -462,18 +503,20 @@ void graph::build_random(){
 		no_edge=true;
 		for(int j=0; j<nodes[n1].edges.size(); j++){
 			if (nodes[n1].edges[j]==n2) no_edge=false;
-			if (debug) cout<<" no edge "<<no_edge<<" "<<false<<" ";
+			//if (debug) cout<<" no edge "<<no_edge<<" "<<false<<" ";
 		}
 		if (no_edge) {
 			addEdge(n1,n2); //adds edge incriments nE++;
-		    if (debug) cout<<"Add edge "<<n1<<" "<<n2<<" "<<nE<<" "<<m<<endl;
+		    //if (debug) cout<<"Add edge "<<n1<<" "<<n2<<" "<<nE<<" "<<m<<endl;
 		}
 	}
 
-    return;	
+    return;	//need to modify so that gen edge works with only the nkernal # of edges
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+
+
+/***********************************************************************************/
+/******* Build a random graph testing each possible edge ***************************/
 void graph::build_random_naive(){	
 	long idum=seed;
 	double Rand;
@@ -497,8 +540,32 @@ void graph::build_random_naive(){
 		
     return;	
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+void graph::build_random_naive(int nkernal){	
+	long idum=seed;
+	double Rand;
+	int n1, n2;
+	populate_graph();
+	
+	double p_E=p/((double)nkernal-1.0); //edge probabiility - is this right?
+	
+   // double dm=1.0*(double)n*p/2.0;
+   // int m = (int)(dm+0.5);
+	
+	for (n1=0; n1<nkernal-1; n1++){
+		for (n2=n1+1; n2<nkernal; n2++){
+			Rand=ran0(&idum);
+			if (Rand < p_E){ //put in edge n1,n2
+				addEdge(n1,n2);
+				if(debug) cout<<"add edge "<<n1<<" "<<n2<<endl;
+			}
+		}
+	}
+		
+    return;	
+}
+
+/***********************************************************************************/
+/***** Build a random graph capping the maximum connectivity on each node **********/
 void graph::build_random_fixed(){
 	long idum=seed;
 	populate_graph();
@@ -529,6 +596,9 @@ void graph::build_random_fixed(){
 	
 	return;	
 }
+/***********************************************************************************/
+/*** for a random graph there are n(n-1)/2 possible edges, here we choose one ******/
+/*** and make a  head to tail (n1,n2) pair *****************************************/
 unsigned long long graph::gen_edge_number(unsigned long long maxE, long &idum){
     double dl;
     
@@ -557,8 +627,9 @@ void graph::get_n1_n2_from_l(unsigned long long l, int &n1, int &n2){
 	}
 	return;	
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***** Build a random graph capping the maximum connectivity on each node **********/
+/***** using the gen_edge_number routine *******************************************/
 void graph::build_random_fixed_2(){
 	long idum=seed;
 	populate_graph();
@@ -571,11 +642,11 @@ void graph::build_random_fixed_2(){
 	double dm = double(num_n)*c/2.0;
 	m =(unsigned long long)(dm+0.5);
 	mE = num_n*(num_n-1)/2;
-	
+	if(debug) cout<<" initialize ran3 ";
 	for (int i=0; i<1000; i++) float blank=ran3(&idum);  //initialize random
 	
 	nE =0;
-	
+	if(debug) cout<<" prepare to add edges ";
 	while (nE<m) {
 		l=gen_edge_number(mE, idum);
 		get_n1_n2_from_l(l, n1, n2);
@@ -590,8 +661,206 @@ void graph::build_random_fixed_2(){
 	
 	return;	
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/****** Scale-free random graphs       *********************************************/
+/***********************************************************************************/
+/***********************************************************************************/
+/********************************************************************/
+/** builds scale free random graph                                 **/
+/**      static model  cond-mat/0312336                            **/
+/********************************************************************/
+double graph::prob_staticSF(int n1, int n2, double norm, double alpha) {
+   double p_E;
+
+   p_E= (pow((double)n1,-alpha)/norm)*(pow((double)n2,-alpha)/norm);
+   //p_E= (pow((double)n1+1.0,-p)*pow((double)n2+1.0,-p))/(norm*norm);
+      //p_E= (pow((double)n1+1.0,p)/norm)*(pow((double)n2+1.0,p)/norm);
+   return p_E;
+}
+/********************************************************************/
+/** builds scale free random graph                                 **/
+/**      static model  cond-mat/0312336                            **/
+/**      p is a control parameter [0,1) if p=0 graph is ER         **/
+/********************************************************************/
+void graph::build_static_sclfr(double alpha){
+   double p_E=p/(double)num_n;
+   float Rand;
+   long idum=seed;     
+   nE=0;
+   
+   double dm=(double)num_n*p/2.0;
+   int m=int(dm+0.5);
+   
+   bool no_edge=true;
+   int n1, n2;
+   
+   populate_graph();
+   
+   if(debug) cout<<" static sclfree populated "<<num_n<<" "<<m<<endl;	
+   
+   // initialize norm
+   while (p>=1) p=p/num_n;
+   double norm=0;
+   for (n1=1; n1<=num_n; n1++){
+	   norm +=pow((double)n1, -alpha);
+	  // norm +=pow((double)n1+1.0, p);
+   }
+   if(debug) cout<<"norm: "<<norm<<" "<<p_E<<" ";
+   if (debug) p_E=prob_staticSF(100,1,norm, alpha);
+   if(debug) cout<<p_E<<" ";
+  
+	if(debug) cout<<" prepare to add edges ";	
+	
+   while (nE<m) {
+		GenEdge(idum, n1, n2);
+		if(nodes[n2].edges.size()<nodes[n1].edges.size()){
+			int j=n2;
+			n2=n1;
+			n1=j;
+		}
+		//if (debug) cout<<idum<<" "<<n1<<" "<<n2<<" ";
+		no_edge=true;
+		int j=0;
+		while (no_edge && j<nodes[n1].edges.size()){ //is this already an edge?
+			if (n2 == nodes[n1].edges[j]) no_edge=false;
+		//	if (debug) cout<<" no edge "<<no_edge<<" "<<false<<" "<<j<<" ";
+			j++;
+		}
+		if (no_edge) {
+			p_E=prob_staticSF(n1,n2,norm,alpha);
+		//	if (debug) cout<<" "<<n1<<" "<<n2<<" "<<p_E<<" "<<endl;
+			if (Rand < p_E) {
+				addEdge(n1,n2); //adds edge incriments nE++;				
+			 //   if(debug) cout<<"add edge "<<n1<<" "<<n2<<endl;
+			    if (debug) cout<<"Add edge "<<n1<<" "<<n2<<" "<<nE<<" "<<m<<" "<<Rand<<" "<<p_E<<endl;
+			}
+		    //if (debug) cout<<"Add edge "<<n1<<" "<<n2<<" "<<nE<<" "<<m<<endl;
+		}
+	}
+
+   return;
+}
+/********************************************************************/
+/** builds power law network                                       **/
+/**                                                                **/
+/********************************************************************/
+double graph::prob_PI(int n2) {
+
+   double p_E;
+
+   p_E = p*double(nodes[n2].edges.size())/(2.0 * (double) nE)/2.0;
+   return p_E;
+}
+void graph::build_sclfr_grph(){
+   double p_E=c/(double)num_n;
+   float Rand;
+   long idum=seed;     
+ //  nE=0;
+    populate_graph();
+   if(debug) cout<<" populated ";	
+ 	if(debug) cout<<" prepare to add edges ";	  	
+	for (int n1=1; n1<num_n; n1++){ //for all nodes
+		for (int n2=0; n2<n1; n2++){ //for all nodes below n1 
+	        Rand=ran2(&idum);  
+	        if (nE ==0) p_E=1;
+	        else p_E=prob_PI(n2);
+	        if (Rand < p_E && nodes[n1].edges.size()<100 && nodes[n1].edges.size()<100){ //put in edge n1,n2
+				addEdge(n1,n2);
+				if(debug) cout<<"add edge "<<n1<<" "<<n2<<" "<<nE<<endl;
+			}
+	    } 			
+    } 
+
+   return;
+}
+/********************************************************************/
+/** builds barabosi network                                        **/
+/**                                                                **/
+/** in a barabosi style network there are nkernal nodes placed w/  **/
+/** bonds as the kernal of the graph, then nodes are added to the  **/
+/** graph always with c # of edges, these are connected randomly to**/
+/** previous nodes based on the probability for each previous node **/
+/** which = (connectivity of node i)/total number of edges         **/
+/**                                                                **/
+/** This probability is generated by placing the head and tail node**/
+/** of each edge into the vector prob and chosing randomly a       **/
+/** reference in the vector prob as the node that is now connected **/
+/** to the new node.                                               **/
+/********************************************************************/
+void graph::build_barabosi_network(int nkernal){ //kernal is the initial size of a random core.
+	int c_curr=0, n2=0;
+	int num_n_total=num_n; //the is a dummy to hold the total number of nodes
+	std::vector< int > prob;  //a probabilty for each node store the 
+	long idum=seed;
+	bool s=true;
+
+	//build a random core of nkernal nodes
+	num_n=nkernal;
+	build_random(); //this builds a random graph of nkernal number of nodes
+//	build_random_naive();
+//	build_random_naive(nkernal);		
+	//cur_c=get_c();
+	// would like to change this so that one node in the kernal is highly connected 
+	//(all connected to node 0 with some probability)
+//	num_n=num_n_total;
+	//if (debug)cout<<"built kernal.  no. node:"<<num_n<<" no. Edges:"<<nE<<" "<<endl;
+
+
+	for (int i=0; i<nodes.size(); i++){ //initialize prob vector
+		for(int j=0; j<nodes[i].edges.size(); j++){  //every head and tail goes into prob vector
+			n2=nodes[i].edges[j];
+			if (i<n2) {
+			   prob.push_back(i);
+			   prob.push_back(n2);
+		    }
+		}
+	}
+	if (debug)cout<<"built kernal.  no. node:"<<num_n<<" no. Edges:"<<nE<<" "<<prob.size()<<" ";
+
+	num_n=num_n_total;
+	populate_graph();  //add the rest of the nodes to the graph
+	if (debug)cout<<"populated.  no. node:"<<num_n<<" in graph"<<nodes.size()<<" c:"<<p<<endl;
+
+    int c_stop=p;
+
+	for (int n1=nkernal-1; n1<num_n; n1++){ //insert an edge with c connections
+		c_curr=0;
+		while (c_curr<c_stop){
+     	  //	if(debug)cout<<" start while"<<" ";
+		  // if(debug)cout<<" s:"<<s<<" fm "<<(int)fmod(ran2(&idum)*prob.size(),prob.size())<<" "<<prob.size()<<" "<<prob[(int)fmod(ran2(&idum)*prob.size(),prob.size())];
+		   do {
+		     int j=(int)fmod(ran2(&idum)*prob.size(),prob.size());
+		     n2 = prob[j];
+	       }  while (n1==n2);
+		   if(debug)cout<<" n2:"<<n1<<" n2:"<<n2<<" ";
+		   int j=0;
+		   s=true;
+		   while (s && j<nodes[n2].edges.size()){
+			   if (n1==nodes[n2].edges[j]) {
+				   s=false; //edge n1 n2 exists
+				   if(debug)cout<<" n2:"<<n1<<" n2:"<<n2<<" exists ";
+			   }
+			   j++;
+		   }
+		   if (s) {
+			   addEdge(n1,n2);
+			   c_curr++;
+			   if(debug)cout<<"edge added: c_curr:"<<c_curr;
+		       prob.push_back(n1);
+			   prob.push_back(n2);
+			   if(debug)cout<<"edges added added to prob vector "<<prob.size();
+		   }
+		   if(debug)cout<<" return"<<endl;
+ 		}
+	}				
+   if (debug)cout<<"built kernal.  no. node:"<<num_n<<" no. Edges:"<<nE<<" "<<endl;
+		
+   return;
+}
+/***********************************************************************************/
+/****** Routines for building lattices *********************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::build_triangular_lattice(){
 	int n1, n2, n3, n4;
 	long idum=seed;
@@ -629,15 +898,14 @@ void graph::build_triangular_lattice(){
 	}
 	return;	
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::build_fcc(){
    	int num_n=L*L*L; //make an (L x L) lattice
 	int n1, n2, n3, n4, n5, n6, n7;
     double Rand;
 	double p_E=p;
 	long idum=seed;
-	
 		
 	populate_graph(); //add num_n nodes to graph.
 	
@@ -693,8 +961,8 @@ void graph::build_fcc(){
 	}
    return;
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::build_square_lattice(){
 	//same as build triangular but w/o the diagonals.
 	int num_n=L*L; //make an (L x L) lattice
@@ -727,8 +995,8 @@ void graph::build_square_lattice(){
 	}
 	return;
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::build_cubic(){
    	int num_n=L*L*L; //make an (L x L) lattice
 	int n1, n2, n3, n4, n5, n6, n7;
@@ -776,8 +1044,8 @@ void graph::build_cubic(){
 	
 	return;	
 }
-/***************************************************************************************************/
-/***************************************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::clear(){
 	//cout<<nodes.size()<<" "<<get_nE();
 	int i=0;
@@ -808,12 +1076,15 @@ void graph::clear(){
 	//		  cout<<i<<" clear nodes"<<endl;
 	return;
 }
+/***********************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
 void graph::build_graph(bool write){    
 
    clear();//this should make sure than when you construct a 
              //graph it is empty. It will still contain
 			 //the number of nodes
-   if (debug) cout<<" build graph subroutine "<<grphtype<<" "<<" "<<num_n<<" "<<p<<" "<<c<<" "<<seed<<std::endl; 
+   if (debug) cout<<" build graph subroutine  g.type:"<<grphtype<<"  N:"<<num_n<<" p:"<<p<<" c:"<<c<<" seed:"<<seed<<std::endl; 
    switch(grphtype){
 	  case 0:{
          if (p/((double)num_n-1)>.75) build_random_naive();
@@ -846,19 +1117,31 @@ void graph::build_graph(bool write){
          if(debug)cout<<"built sq"<<endl;		  
          break;		  
 	  }      
-//	  case 6:{ //-sclf
-//		  build_square_lattice();
-//          if(debug)cout<<"built sclf"<<endl;
-//        break;
-//	  }      
-//	  case 7:{ //-rnd2
-//		  build_square_lattice();
-//        break;
-//	  }      
-//	  case 8:{ //-bb
-//		  build_square_lattice();
-//          if(debug)cout<<"built bb"<<endl;
-//	  } 	  	  	  
+	  case 6:{ //-sclf
+	      if(debug)cout<<"building sclf ";	  
+		  build_sclfr_grph();
+          if(debug)cout<<"built sclf"<<endl;
+        break;
+	  }      
+	  case 7:{ //-staticsclf
+		  double alpha=0.5;
+		  build_static_sclfr(alpha);
+          if(debug)cout<<"built sclf"<<endl;		  
+          break;
+	  }      
+	  case 8:{ //-bb
+		  int nkernal=0;
+		  double percent=0.00, step=1/(double)num_n;
+		  while (nkernal<=10*p){ //kernal must be bigger than the number of edges added per node
+			  percent=percent+step;
+			  nkernal =(int) (percent*(double)num_n);
+			 // if(debug)cout<<"nkernal"<<nkernal<<endl; 
+		  }
+		  if(debug)cout<<"nkernal"<<nkernal<<endl;
+		  build_barabosi_network(nkernal);
+          if(debug)cout<<"built bb"<<endl;
+          break;        
+	  } 	  	  	  
       case 9:{
 		  build_random_fixed();
           if(debug)cout<<"built random fixed"<<endl;

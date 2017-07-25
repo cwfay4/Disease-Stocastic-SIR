@@ -346,7 +346,7 @@ int main(int argc, char *argv[]){
 	      datum[6]+=pop.n_dead/(double)g.get_n();  
 	      datumsq[6]+=(pop.n_dead/(double)g.get_n())*(pop.n_dead/(double)g.get_n());	      
 	      datum[7]+=pop.n_sick_max/(double)g.get_n();
-	      datumsq[7]+=(pop.n_dead/(double)g.get_n())*(pop.n_dead/(double)g.get_n());	       
+	      datumsq[7]+=(pop.n_sick_max/(double)g.get_n())*(pop.n_sick_max/(double)g.get_n());	       
 	   }
 	   std::ofstream output(oname.data(), ios_base::app);
 	   //std::ofstream output("d-steadystate.csv", ios_base::app);

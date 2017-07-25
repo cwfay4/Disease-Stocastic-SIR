@@ -20,6 +20,7 @@
 #include "random.hpp"
 #include "graph.hpp"
 #include "diseasePOP.hpp"
+#include "Disease_basic_utils.hpp"
 
 //#include "defaults.hpp"
 //#include "grphfns_a.hpp"
@@ -31,171 +32,16 @@
 using namespace std;
 
 #define NUM_STEPS 1000
-#define grphtypedflt 0
+//#define grphtypedflt 0
 //#define debug true
 
-void vce_precon(graph& g, long &seed, dPOP& a){
-   long idum=seed;
-     
-   for (unsigned int i=1;i<=1000;i++){ //initialize random number generator
-      ran2(&seed);
-   }   
-      
-   for(int i=0; i<g.get_n(); i++){
-	  g.nodes[i].stateP=0;	   
-      if (g.nodes[i].edges.size()==0){ //if node has no edges set to uncovered (0)
-         g.nodes[i].frz=true;
-	     g.nodes[i].intState=-1; //isolated node ignore it
-      }
-      else if (ran2(&idum)<a.p_Immune){  // healthy immune
-	     g.nodes[i].intState=0;
-	     g.nodes[i].frz=true;
-	     a.n_immune++;
-	  }
-	  else if (ran2(&idum)<a.p_sick){ //sick
-		 g.nodes[i].intState=1;
-	     g.nodes[i].frz=false; 
-	     a.n_sick++;
-      }
-      else {// healthy not immune
-		 g.nodes[i].frz=false;
-	     g.nodes[i].intState=0;
-	     a.n_healthy++;
-      }
-      if (g.get_debug())cout<<i<<" state"<<g.nodes[i].intState<<" frz"<<g.nodes[i].frz<<endl;
-   }
-   if (true) cout<<" sick "<<a.n_sick<<" Healthy "<<a.n_healthy<<" Immune "<<a.n_immune<<" dead "<<a.n_dead<<endl;
-//   g.calc_sum_P();
-   return;   
-}
-//***********************************************************************
-void randomize_node_list(int n, std::vector<int>& nlist, long &idum){
-   std::vector<int> nlist2(nlist.size(),0);
-   int j;
-   double dj;
-   bool debug=false;
-  
-   for(unsigned int i=0; i<nlist.size(); i++){
-      dj=fmod(ran2(&idum)*nlist.size(),nlist.size()); 
-      j=(int) dj; // chose a random node from list 2 and place it in i in the list;	   
-      std::iter_swap(nlist.begin()+i,nlist.begin()+j);
-   }
- //  nlist.clear();
- //  if (debug) cout<<" nlist size after clearing "<<nlist.size()<<endl;
- //  while (nlist2.size()>0){
- //     dj=fmod(ran2(&idum)*nlist2.size(),nlist2.size());
- //     j=(int) dj; // chose a random node from list 2 and place it in i in the list;
- //     nlist.push_back(nlist2[j]);
- //     nlist.pop_front();
-      //std::vector<int>::iterator 
-      //     p1=find(nlist.begin(), nlist.end(), nlist2[i]); 
-     // auto it = std::find(nlist2.begin(), nlist2.end(), nlist2[i]);
-     // if (it != nlist.end()) {
-     //     using std::swap;     // swap the one to be removed with the last element
-     //     swap(*it, nlist.back()); // swap the one to be removed with the last element
-     //     nlist.pop_back();        // and remove the item at the end of the container
-     // }                        // to prevent moving all items after 'nlist2[i]' by one
-     //nlist2.erase(nlist2[j]); 
-  //   nlist2.erase(nlist2.begin()+(j-1)); 
-     // nlist2.erase(find(nlist2.begin(), nlist2.end(), nlist[i])); //not right synatatically
-//   }
-   if (debug) cout<<" nlist size after randomizing "<<nlist.size()<<endl;
-   nlist2.clear();
-   return;
-}
-void disease_pop(graph& g, dPOP a, long seed2){
-	bool conv=true;
-	long idum=seed2;
-	
-	double dn = (double) g.get_n();
-	
-	std::vector<int> nlist(g.get_n(),0);
-	for(unsigned int i=0; i<nlist.size(); i++){
-      nlist[i]=i;
-    }
-    
-	randomize_node_list(g.get_n(), nlist, seed2);
-	
-	//if (g.get_debug()) {
-	//	cout<<a.n_sick<<" "<<a.n_healthy<<" "<<a.n_immune;
-	//    cout<<"node list randomized ";
-	// 	for(unsigned int i=0; i<nlist.size(); i++){
-    //      cout<<" nlist "<<nlist[i]<<" ";
-    //    } 
-    //    cout<<endl;  
-	// }
-    
-    for (unsigned it=0; it<NUM_STEPS; it++){ //iterate over trials
-		randomize_node_list(g.get_n(), nlist, seed2);
-		for(unsigned i=0; i<nlist.size(); i++){ //for all nodes
-			//cout<<i<<" state"<<g.nodes[i].intState<<" frz"<<g.nodes[i].frz<<endl;
-			if (!g.nodes[i].frz && g.nodes[i].intState==1){ //if you are sick but not dead
-			//	cout<<" you are sick but not dead"<<endl;
-			   if (g.nodes[i].stateP > a.lifetime){
-				   if(ran3(&idum)<a.fatality){ //oops you died
-					  g.nodes[i].frz =true;
-					  a.n_dead++;
-					  a.n_sick--;
-				//	  cout<<" you died!"<<endl;
-				   }
-				   else {  //bam! you are healed...and immune.
-					  g.nodes[i].intState=0;
-					  if (a.I) {
-	                    g.nodes[i].frz=true; 
-	                    a.n_immune++;
-	                  }
-	                  else a.n_healthy++;
-	                  a.n_sick--;
-	                  g.nodes[i].stateP=0;
-	               //   cout<<" you are healed!"<<endl;
-			       }
-			   }
-			   else g.nodes[i].stateP++; //time counter for sickness
-			}			
-			else if (!g.nodes[i].frz && g.nodes[i].intState==0){ //if you are healthy, you might get sick.
-			  // cout<<" you are healthy"<<endl;
-			   double n_I=0;
-			   for (int j=0; j < g.nodes[i].edges.size(); j++){//for all edges connedtd to i
-	               int n2=g.nodes[i].edges[j];
-	               if (g.nodes[n2].intState==1 && !g.nodes[n2].frz) n_I++; //a node that is frozen and sick is dead!
-	           }
-	           double prob = 1.0 - pow((1.0-a.contagin),n_I); //probability of getting sick
-	           //cout<<prob<<" ";
-	           if (ran3(&idum)<prob){ //Are you sick
-                  g.nodes[i].intState=1; //apparently yes.
-	              g.nodes[i].frz=false;
-	              g.nodes[i].stateP=0;
-	              a.n_sick++;
-	              a.n_healthy--;
-	              //cout<<" You are now sick"<<endl;
-		       }
-	           else if (ran2(&idum)<a.p_sick){  //areyou randomly getting sick?
-				  g.nodes[i].intState=1; //apparently yes.
-	              g.nodes[i].frz=false;
-	              g.nodes[i].stateP=0;
-	              a.n_sick++;
-	              a.n_healthy--; 
-			   }
-		    }
-		}
-	  
-      if (conv){ 
-	     std::ofstream output("Disease_Conv.csv", ios_base::app);
-         output<<it<<" "<<(double)a.n_healthy/dn<<" "<<(double)a.n_sick/dn<<" "<<(double)a.n_immune/dn<<" "<<(double)a.n_dead/dn<<endl;
-	     output.close();
-      }
-      if (g.get_debug()) cout<<a.n_healthy<<" "<<a.n_sick<<" "<<a.n_immune<<endl;
-   }
-   cout<<" sick "<<a.n_sick<<" Healthy "<<a.n_healthy<<" Immune "<<a.n_immune<<" dead "<<a.n_dead<<endl;
-   cout<<" sick "<<(double)a.n_sick/dn<<" Healthy "<<(double)a.n_healthy/dn<<" Immune "<<(double)a.n_immune/dn<<" dead "<<(double)a.n_dead<<endl;
-   return;	
-}
+
 int main(int argc, char *argv[]){
    int argz = 1;
 
    double Psum=0;
    double p=3.0;
-   bool write=true, dsply=false, histo=false, debug_test=false, fulloutput=false, conv=true;
+   bool write=true, dsply=false, histo=false, debug_test=true, fulloutput=false, conv=true;
    char *filename;
    char LoPR;
    int grphtype=0;  /* 0 for rndm, 1 for pt */
@@ -222,15 +68,16 @@ int main(int argc, char *argv[]){
       else if(inputstr.compare("-sq") == 0) g.grphtype=5;   //squareLattice     
       else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
       else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
-      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
-      	g.grphtype=8;
-	    i++;
-		ss>>dummy;
-		dummy=atoi(argv[i]);
-	    g.set_L(dummy);
+      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
+//      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
+ //     	g.grphtype=8;
+//	    i++;
+//		ss>>dummy;
+//		dummy=atoi(argv[i]);
+//	    g.set_L(dummy);
 	   // g.set_L(atoi(argv[argz]));
 	    //cout<<"nkernal: "<<L<<" ";
-	  }
+//	  }
       else if(inputstr.compare("-rndfixedc") == 0||inputstr.compare("-rf") ==0){ //random fixed connectivity
       	g.grphtype=9;
 	    i++;
@@ -245,7 +92,15 @@ int main(int argc, char *argv[]){
       else if(inputstr.compare("-dsply") == 0)     	dsply=true;
       else if(inputstr.compare("-fullout") == 0)   	fulloutput=true;
       else if(inputstr.compare("-histo") == 0)     	histo=true; 
-      else if(inputstr.compare("-conv") == 0)     	conv=true;      
+      else if(inputstr.compare("-conv") == 0)     	conv=true; 
+            else if(inputstr.compare("-h") == 0){  //help menu
+		Disease_usage(false); 
+		return 0;  
+	  }     	
+      else if(inputstr.compare("-hv") == 0){  //help menu verbose
+		Disease_usage(true); 
+		return 0;  
+	  }	       
       else if(inputstr.compare("-rgml") ==0||inputstr.compare("-r") ==0){  //read a file in gml format
 	     i++;
 	     ss.clear();
@@ -275,7 +130,7 @@ int main(int argc, char *argv[]){
 	  }
 	  else if(j==1){  //input edge probability
 		  g.p=atof(argv[i]); //works
-		  if (debug_test) cout<<"p="<<ss.str()<<" "<<g.p<<std::endl;
+		  if (true) cout<<"p="<<ss.str()<<" "<<g.p<<std::endl;
 		  j++;
 	  }
 	  else if(j==2){ //probability of being initially sick
@@ -313,7 +168,7 @@ int main(int argc, char *argv[]){
 //	  if (g.grphtype==-1) nsamp=1;  //number of samples to run
 //      else nsamp = atoi(argv[argz++]);
    
-      if (g.grphtype==8) cout<<"nkernal: "<<g.get_L()<<" "; // dimension of lattice
+//      if (g.grphtype==8) cout<<"nkernal: "<<g.get_L()<<" "; // dimension of lattice
       if (g.grphtype==3 || g.grphtype==4) { // dimension of lattice
          g.set_L(g.get_n());
          g.set_n(std::pow(g.get_L(),3));
@@ -326,7 +181,7 @@ int main(int argc, char *argv[]){
 //	  cout<<argv[i]<<" "<<ss<<" "<<inputstring<<endl;
    }
    
-   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
+   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
    cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
    cout<<" lifetime= "<<pop.lifetime<<endl;
 //*****************************************************************        
