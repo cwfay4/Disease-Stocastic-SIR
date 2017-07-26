@@ -129,11 +129,11 @@ void dPOP::pop_evolve(graph& g, long seed2){
 			if (!g.nodes[i].frz && g.nodes[i].intState==1){ //if you are sick but not dead
 			   if(debug) cout<<" you are sick but not dead"<<endl;
 			   if (g.nodes[i].stateP > lifetime){
-				   if(ran3(&idum) < fatality || (simple && !I)){ //oops you died (could also be considered immune)
+				   if(ran2(&idum) < fatality || (simple && !I)){ //oops you died (could also be considered immune)
 					  g.nodes[i].frz =true;
 					  n_dead++;
 					  n_sick--;
-					 if(debug) cout<<" you died!"<<endl;
+					 if(g.get_debug()) cout<<" you died!"<<endl;
 				   }
 				   else {  //bam! you are healed
 					  g.nodes[i].intState=0;
@@ -158,7 +158,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
 	           }
 	           double prob = 1.0 - pow((1.0-contagin),n_I); //probability of getting sick
 	           if(debug) cout<<prob<<" ";
-	           if (ran3(&idum)<prob){ //Are you sick
+	           if (ran2(&idum)<prob){ //Are you sick
                   g.nodes[i].intState=1; //apparently yes.
 	              g.nodes[i].frz=false;
 	              g.nodes[i].stateP=0;
@@ -181,14 +181,14 @@ void dPOP::pop_evolve(graph& g, long seed2){
          output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
 	     output.close();
       }
-      if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
+     // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
       if (n_sick_max<n_sick){
 		 n_sick_max=n_sick;  //peak of the number of infected
          n_sick_mIter=it;     //time step of peak of infected
       }
    }
-  if(debug)  cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<endl;
-  if(debug)  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead<<endl;
+//  if(g.get_debug())  cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<endl;
+  if(g.get_debug())  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead/dn<<endl;
    return;	
 }
 	

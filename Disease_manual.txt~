@@ -43,7 +43,7 @@ D_10k_2_0001_03_02_0_10.csv
 
 [Either rename in file browser or by terminal command  mv Disease_Conv.csv D_10k_2_0001_03_02_0_10.csv  ]
 
-To run the program where the person has a chance of becoming immune after the sickness,
+To run the program where the person has a chance of becomeing immune after the sickness,
 ./Disease -I 10000 2 0.001 0.30 0.2 0.0 10
 -I is a switch that turns on immunity if the ill person does not die.
 

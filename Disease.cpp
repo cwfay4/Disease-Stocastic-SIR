@@ -49,6 +49,7 @@ int main(int argc, char *argv[]){
    dPOP pop;
    pop.lifetime=10;
    int dummy;
+   pop.simple=false;
 
    graph g;
    g.grphtype=grphtypedflt;
@@ -60,23 +61,26 @@ int main(int argc, char *argv[]){
    for (i = 1; i < argc; i++) {
    	  ss.clear();
 	  ss.str(argv[i]);
-      ss>>inputstr; 
-      if(inputstr.compare("-pt") == 0) g.grphtype=1;         //planar triangular graph
+      ss>>inputstr;
+      if (inputstr.compare("-debug") == 0) debug_test=true;
+      else if(inputstr.compare("-simple") == 0) pop.simple=true;
+      else if(inputstr.compare("-pt") == 0) g.grphtype=1;         //planar triangular graph
       else if(inputstr.compare("-ptr3") == 0) g.grphtype=2;   //planar triangular graph with ran3
       else if(inputstr.compare("-fcc") == 0) g.grphtype=3;   //FCC Lattice
       else if(inputstr.compare("-cubic") == 0) g.grphtype=4;   //cubic Lattice
       else if(inputstr.compare("-sq") == 0) g.grphtype=5;   //squareLattice     
       else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
       else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
-      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
-      	g.grphtype=8;
-	    i++;
-		ss>>dummy;
-		dummy=atoi(argv[i]);
-	    g.set_L(dummy);
+      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
+//      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
+ //     	g.grphtype=8;
+//	    i++;
+//		ss>>dummy;
+//		dummy=atoi(argv[i]);
+//	    g.set_L(dummy);
 	   // g.set_L(atoi(argv[argz]));
 	    //cout<<"nkernal: "<<L<<" ";
-	  }
+//	  }
       else if(inputstr.compare("-rndfixedc") == 0||inputstr.compare("-rf") ==0){ //random fixed connectivity
       	g.grphtype=9;
 	    i++;
@@ -129,7 +133,7 @@ int main(int argc, char *argv[]){
 	  }
 	  else if(j==1){  //input edge probability
 		  g.p=atof(argv[i]); //works
-		  if (debug_test) cout<<"p="<<ss.str()<<" "<<g.p<<std::endl;
+		  if (true) cout<<"p="<<ss.str()<<" "<<g.p<<std::endl;
 		  j++;
 	  }
 	  else if(j==2){ //probability of being initially sick
@@ -167,7 +171,7 @@ int main(int argc, char *argv[]){
 //	  if (g.grphtype==-1) nsamp=1;  //number of samples to run
 //      else nsamp = atoi(argv[argz++]);
    
-      if (g.grphtype==8) cout<<"nkernal: "<<g.get_L()<<" "; // dimension of lattice
+//      if (g.grphtype==8) cout<<"nkernal: "<<g.get_L()<<" "; // dimension of lattice
       if (g.grphtype==3 || g.grphtype==4) { // dimension of lattice
          g.set_L(g.get_n());
          g.set_n(std::pow(g.get_L(),3));
@@ -180,7 +184,7 @@ int main(int argc, char *argv[]){
 //	  cout<<argv[i]<<" "<<ss<<" "<<inputstring<<endl;
    }
    
-   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
+   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
    cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
    cout<<" lifetime= "<<pop.lifetime<<endl;
 //*****************************************************************        
@@ -250,6 +254,10 @@ int main(int argc, char *argv[]){
   // disease_pop(g, pop, lseed[2]);
    pop.pop_evolve(g, lseed[2]);   
    if (debug_test) cout<<"disease pop finished"<<std::endl;   
+   
+   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
+   cout<<" lifetime= "<<pop.lifetime<<endl;
    
    return 0;
 }

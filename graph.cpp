@@ -1132,7 +1132,9 @@ void graph::build_graph(bool write){
 	  case 8:{ //-bb
 		  int nkernal=0;
 		  double percent=0.00, step=1/(double)num_n;
-		  while (nkernal<=2*p){ //kernal must be bigger than the number of edges added per node
+
+		  while (nkernal<=10*p){ //kernal must be bigger than the number of edges added per node
+
 			  percent=percent+step;
 			  nkernal =(int) (percent*(double)num_n);
 			 // if(debug)cout<<"nkernal"<<nkernal<<endl; 
