@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 
    double Psum=0;
    double p=3.0;
-   bool write=true, dsply=false, histo=false, debug_test=true, fulloutput=false, conv=true;
+   bool write=true, dsply=false, histo=false, debug_test=false, fulloutput=false, conv=true;
    char *filename;
    char LoPR;
    int grphtype=0;  /* 0 for rndm, 1 for pt */
@@ -60,8 +60,9 @@ int main(int argc, char *argv[]){
    for (i = 1; i < argc; i++) {
    	  ss.clear();
 	  ss.str(argv[i]);
-      ss>>inputstr; 
-      if(inputstr.compare("-pt") == 0) g.grphtype=1;         //planar triangular graph
+      ss>>inputstr;
+      if (inputstr.compare("-debug") == 0) debug_test=true;
+      else if(inputstr.compare("-pt") == 0) g.grphtype=1;         //planar triangular graph
       else if(inputstr.compare("-ptr3") == 0) g.grphtype=2;   //planar triangular graph with ran3
       else if(inputstr.compare("-fcc") == 0) g.grphtype=3;   //FCC Lattice
       else if(inputstr.compare("-cubic") == 0) g.grphtype=4;   //cubic Lattice
