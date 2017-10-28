@@ -29,6 +29,8 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <time.h>
+
 //#include "Table2D.hpp"
 #include "graph.hpp"
 #include "cluster.hpp"

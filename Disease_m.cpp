@@ -16,6 +16,7 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <time.h>
 
 #include "random.hpp"
 #include "graph.hpp"
@@ -350,19 +351,19 @@ int main(int argc, char *argv[]){
 	   }
 	   std::ofstream output(oname.data(), ios_base::app);
 	   //std::ofstream output("d-steadystate.csv", ios_base::app);
-	   output<<g.nodes.size()<<" "<<ITERSTART<<" "; //graph size and iterator
+	   output<<g.nodes.size()<<", "<<ITERSTART<<", "; //graph size and iterator
 	   /********** initial parameters ***************************************/
-	   output<<pop.p_sick<<" "<<pop.contagin<<" "<<pop.fatality<<" "<<pop.p_Immune;
-       output<<" "<<pop.lifetime<<" "<<pop.I<<" ";
+	   output<<pop.p_sick<<", "<<pop.contagin<<", "<<pop.fatality<<", "<<pop.p_Immune;
+       output<<", "<<pop.lifetime<<", "<<pop.I<<", ";
 	   /********** runtime results and std error ****************************/       
        for (int k = 1; k<=7; k++){
 		  double var=standard_error(datum[k],datumsq[k],dn);
-          output<<datum[k]/dn<<" "<<var<<" ";
+          output<<datum[k]/dn<<", "<<var<<", ";
        }
        output<<endl;
 	   output.close();  
 	   cout<<"ITERNUM "<<dn<<" n: "<<datum[0]<<" ITERSTART: "<<ITERSTART<<" nE: "<<datum[1]/dn<<" c: "<<datum[2]/dn<<" n_Sick: "<<datum[3]/dn;
-	   cout<<" n_H: "<<datum[4]/dn<<" n_Immune: "<<datum[5]/dn<<" n_dead: "<<datum[6]/dn<<" "<<pop.contagin<<" "<<pop.fatality<<" "<<pop.lifetime<<endl;
+	   cout<<" n_H: "<<datum[4]/dn<<" n_Immune: "<<datum[5]/dn<<" n_dead: "<<datum[6]/dn<<" n_sick_max: "<<datum[7]/dn<<" "<<pop.contagin<<" "<<pop.fatality<<" "<<pop.lifetime<<endl;
   
 	   switch (ITERCASE){  //iterate your interested quantity
             case 1:{//iterate over contagin / virality
