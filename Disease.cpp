@@ -157,9 +157,10 @@ int main(int argc, char *argv[]){
 		  if (debug_test) cout<<"p_Immune="<<ss.str()<<" "<<pop.p_Immune<<std::endl;
 		  j++;
 	  }
-	  else if(j==6){ //sickness duration
-		  pop.lifetime=atof(argv[i]); //works
-		  if (debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
+	  else if(j==6){ //sickness duration or probability of recovery
+		  pop.p_Recovery=atof(argv[i]); //added a new parameter, probability of recovery
+		  pop.lifetime=0; //works, initializing lifetime to be zero but in a way so it can be changed later
+		  if (debug_test) cout<<"p_Recovery="<<ss.str()<<" "<<pop.p_Recovery<<std::endl;
 		  j++;
 	  }	  
 //	  if (lseedstart==-1) lseedstart=time(0);   //starting seed
@@ -186,7 +187,7 @@ int main(int argc, char *argv[]){
    }
    
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<"p_Recovery="<<pop.p_Recovery<<endl;
    cout<<" lifetime= "<<pop.lifetime<<endl;
 //*****************************************************************        
    std::string gt="p", rnt="-r2", sbc="f";
@@ -243,7 +244,8 @@ int main(int argc, char *argv[]){
    double c=g.get_c();
       if (debug_test) cout<<g.c<<std::endl;
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<endl;
+   cout<<" contagin= "<<pop.contagin<<" fatal
+   ity="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<endl;
 //   if (false) {
 //      cout<<n<<" "<<p<<" "<<c<<" "<<nE<<" "<<lseed[0]<<" "<<lseed[1]<<" "<<lseed[2];        
 //   }
@@ -258,7 +260,7 @@ int main(int argc, char *argv[]){
    
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick<<" p_sick_max= "<<pop.n_sick_max;
    cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
-   cout<<" lifetime= "<<pop.lifetime<<endl;
+   cout<<" lifetime= "<<pop.lifetime<<"p_Recovery="<<pop.p_Recovery<<endl;
    
    return 0;
 }
