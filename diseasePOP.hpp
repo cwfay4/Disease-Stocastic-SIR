@@ -28,7 +28,8 @@ class dPOP{
 	   double p_Immune;
 	   double p_sick;
 	   double contagin;
-	   double fatality;	
+	   double fatality;
+	   double p_Recovery;	
 	   bool I;  //switch for immunity and death
 	   bool randomvectors;
 	   bool simple; //switch for immunity and additional random new illness;
