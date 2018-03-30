@@ -1,0 +1,49 @@
+Manual For Running the Disease Code on a MAC
+
+open a terminal on your computer
+
+ssh into the computer which you will use which a command like
+
+ssh physics@172.20.21.152 [username@url_name]    
+
+password: quantum
+
+Computers you will use are:
+name        url_name
+Maxwell     172.20.21.152   (in the electronics lab)
+argon       172.20.21.104   (in the general physics lab)
+Rutherford  sg0152cwbh.king.edu   (in the general physics lab)
+Oakridge    josephftsanakis.king.edu   (in the general physics lab)
+Feynman     172.20.21.149   (in the general physics lab)
+Einstein    172.20.22.177   (in the general physics lab)
+
+change into the directory object_code_1.0 with the command
+
+cd Documents/cwfay_research/Object_code_1.0/
+
+the command "ls" will display the contents of the directory,
+
+run the Disease code with
+
+./Disease (number of vertices) (connectivity) (probabilty of starting sick) (contagiousness of disease) (probability of dying) (probabilty of starting immune) (disease lifetime)
+
+[Similar to:  ./Disease 10000 2 0.001 0.30 0.2 0.0 10]
+
+output goes into  
+This is a .csv file that can be opened in Excel or another graphing program (probably mathematica)
+
+After each run it should be renamed. 
+Usually in the format
+
+D_(number of vertices)_(connectivity)_(probabilty of starting sick)_(contagiousness of disease)_(probability of dying)_(probabilty of starting immune)_(disease lifetime).csv
+
+I remove all decimal places so that the command above I would move to the file
+
+D_10k_2_0001_03_02_0_10.csv
+
+[Either rename in file browser or by terminal command  mv Disease_Conv.csv D_10k_2_0001_03_02_0_10.csv  ]
+
+To run the program where the person has a chance of becomeing immune after the sickness,
+./Disease -I 10000 2 0.001 0.30 0.2 0.0 10
+-I is a switch that turns on immunity if the ill person does not die.
+
