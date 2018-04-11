@@ -128,7 +128,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
 			if(debug) cout<<i<<" state"<<g.nodes[i].intState<<" frz"<<g.nodes[i].frz<<endl;
 			if (!g.nodes[i].frz && g.nodes[i].intState==1){ //if you are sick but not dead
 			   if(debug) cout<<" you are sick but not dead"<<endl;
-			   if (g.nodes[i].stateP > lifetime){
+			   if (g.nodes[i].stateP > lifetime && ran2(&idum)<p_Recovery){//adds the stipulation of a probability of recovery instead of just a lifetime
 				   if(ran2(&idum) < fatality || (simple && !I)){ //oops you died (could also be considered recovered/immune)
 					  g.nodes[i].frz =true;
 					  n_dead++;

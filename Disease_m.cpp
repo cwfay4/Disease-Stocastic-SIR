@@ -33,7 +33,7 @@
 using namespace std;
 
 #define NUM_STEPS 1000
-#define NUM_ITER 10
+#define NUM_ITER 100
 //#define grphtypedflt 0
 //#define debug true
 
