@@ -157,8 +157,9 @@ int main(int argc, char *argv[]){
 		  if (debug_test) cout<<"p_Immune="<<ss.str()<<" "<<pop.p_Immune<<std::endl;
 		  j++;
 	  }
-	  else if(j==6){ //sickness duration
-		  pop.lifetime=atof(argv[i]); //works
+	  else if(j==6){ //sickness duration and probability of recovery
+		  pop.p_Recovery=atof(argv[i]);//sets lifetime to zero and reads prob of recovery instead
+		  pop.lifetime=0; //works
 		  if (debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
 		  j++;
 	  }	  
