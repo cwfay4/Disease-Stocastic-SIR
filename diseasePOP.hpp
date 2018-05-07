@@ -24,6 +24,7 @@ class dPOP{
 	   int n_sick_mIter;
 	   int n_healthy;
 	   int n_dead;
+	   int n_nc;  //the number of nodes with no edges or 'connections'.  Used to normalize
 	   double lifetime;
 	   double p_Immune;
 	   double p_sick;
