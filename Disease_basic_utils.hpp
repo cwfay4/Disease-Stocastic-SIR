@@ -37,12 +37,17 @@ class boolcat{
       bool histo;
       bool debug_test;
       bool fulloutput;
-      bool conv;	
+      bool conv;
+	  int ITERCASE;	
+	  long lseedstart;
 	  boolcat();
 };
 
 /** function prototypes **/
+extern std::string outputname(graph g, dPOP pop);
 extern void Disease_usage(bool verbose);
-extern void Disease_input(int argc, char *argv[], graph g, dPOP pop, boolcat b); 
+extern void pass_test(std::vector<std::string>* );
+extern void pass_test(int& argc, char **argv);
+extern void inputprocessing(int& , char** , graph& , dPOP& , boolcat& , int& ); 
      
 #endif

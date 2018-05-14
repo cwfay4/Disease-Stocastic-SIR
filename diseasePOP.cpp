@@ -9,6 +9,29 @@
 
 using namespace std;
 
+Stats::Stats(){
+   value=0;
+   value_sq=0;
+   dsamp=0;
+   return;
+}
+Stats::Stats(double dn){
+   value=0;
+   value_sq=0;
+   dsamp=dn;
+   return;	
+}
+void Stats::add_data(double datum){
+   //cout<<j<<endl;
+   value=value+datum/dsamp; //sum of datum
+   value_sq=value_sq+value*value; //sum of square of data
+   return;
+}
+double Stats::standard_error(){
+	double var=sqrt(abs(value_sq-(value*value)))/sqrt(dsamp-1);//calculate std error;
+	std_error=var;
+	return var;
+}
 
 dPOP::dPOP () {
    n_immune =0;
@@ -21,7 +44,8 @@ dPOP::dPOP () {
    fatality =0;
    I=false;
    randomvectors=false;
-   lifetime=100;   
+   lifetime=100; 
+   POP_STEPS=P_STEPS;  
    return;
 }
 dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h) {  //I don't know if I am using this
@@ -36,6 +60,7 @@ dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h) 
    lifetime=100; 
    I=false;
    randomvectors=false;
+   POP_STEPS=P_STEPS;
    return;
 }
 void dPOP::clear(){
@@ -98,6 +123,7 @@ void dPOP::precondition(graph& g, long &seed){
 //   g.calc_sum_P();
    return;   
 }
+
 void dPOP::pop_evolve(graph& g, long seed2){
 	bool conv=true;
 	bool debug=false;
@@ -181,6 +207,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
          output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
 	     output.close();
       }
+
      // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
       if (n_sick_max<n_sick){
 		 n_sick_max=n_sick;  //peak of the number of infected
@@ -191,4 +218,103 @@ void dPOP::pop_evolve(graph& g, long seed2){
   if(g.get_debug())  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead/dn<<endl;
    return;	
 }
+void dPOP::pop_evolve(graph& g, long seed2, std::vector <Stats>& convergence_ave){
+	bool conv=true;
+	bool debug=false;
+	long idum=seed2;
 	
+	double dn = (double) g.get_n();
+	
+	std::vector<int> nlist(g.get_n(),0);
+	for(unsigned int i=0; i<nlist.size(); i++){
+      nlist[i]=i;
+    }
+      
+	randomize_node_list(g.get_n(), nlist, seed2);
+	
+	//if (g.get_debug()) {
+	//	cout<<a.n_sick<<" "<<a.n_healthy<<" "<<a.n_immune;
+	//    cout<<"node list randomized ";
+	// 	for(unsigned int i=0; i<nlist.size(); i++){
+    //      cout<<" nlist "<<nlist[i]<<" ";
+    //    } 
+    //    cout<<endl;  
+	// }
+    n_sick_max=n_sick;
+    n_sick_mIter=0;
+    for (unsigned it=0; it<POP_STEPS; it++){ //iterate over POP_STEPS = time
+		randomize_node_list(g.get_n(), nlist, seed2);
+		for(unsigned i=0; i<nlist.size(); i++){ //for all nodes
+			if(debug) cout<<i<<" state"<<g.nodes[i].intState<<" frz"<<g.nodes[i].frz<<endl;
+			if (!g.nodes[i].frz && g.nodes[i].intState==1){ //if you are sick but not dead
+			   if(debug) cout<<" you are sick but not dead"<<endl;
+			   if (g.nodes[i].stateP > lifetime && ran2(&idum)<p_Recovery){//adds the stipulation of a probability of recovery instead of just a lifetime
+				   if(ran2(&idum) < fatality || (simple && !I)){ //oops you died (could also be considered recovered/immune)
+					  g.nodes[i].frz =true;
+					  n_dead++;
+					  n_sick--;
+					 if(g.get_debug()) cout<<" you died!"<<endl;
+				   }
+				   else {  //bam! you are healed
+					  g.nodes[i].intState=0;
+					  if (I) {  //...and immune.
+	                    g.nodes[i].frz=true; 
+	                    n_immune++;
+	                  }
+	                  else n_healthy++;
+	                  n_sick--;
+	                  g.nodes[i].stateP=0;
+	                  if(debug) cout<<" you are healed!"<<endl;
+			       }
+			   }
+			   else g.nodes[i].stateP++; //time counter for sickness
+			}			
+			else if (!g.nodes[i].frz && g.nodes[i].intState==0){ //if you are healthy, you might get sick.
+			  if(debug) cout<<" you are healthy"<<endl;
+			   double n_I=0;
+			   for (int j=0; j < g.nodes[i].edges.size(); j++){//for all edges connedtd to i
+	               int n2=g.nodes[i].edges[j];
+	               if (g.nodes[n2].intState==1 && !g.nodes[n2].frz) n_I++; //a node that is frozen and sick is dead!
+	           }
+	           double prob = 1.0 - pow((1.0-contagin),n_I); //probability of getting sick
+	           if(debug) cout<<prob<<" ";
+	           if (ran2(&idum)<prob){ //Are you sick
+                  g.nodes[i].intState=1; //apparently yes.
+	              g.nodes[i].frz=false;
+	              g.nodes[i].stateP=0;
+	              n_sick++;
+	              n_healthy--;
+	              if(debug) cout<<" You are now sick"<<endl;
+		       }
+	           else if (!simple && ran2(&idum)<p_sick){  //areyou randomly getting sick?
+				  g.nodes[i].intState=1; //apparently yes.
+	              g.nodes[i].frz=false;
+	              g.nodes[i].stateP=0;
+	              n_sick++;
+	              n_healthy--; 
+			   }
+		    }
+		}
+	  bool convi=false; //I don't need individual conv. files
+      if (conv && convi){ 
+	     std::ofstream output("Disease_Conv.csv", ios_base::app);
+         output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
+	     output.close();
+      }
+      if (iteration>1){
+      	   convergence_ave[0].add_data((double)n_healthy/dn);
+      	   convergence_ave[1].add_data((double)n_sick/dn);
+      	   convergence_ave[2].add_data((double)n_immune/dn);
+      	   convergence_ave[3].add_data((double)n_dead/dn);
+	  }
+     // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
+      if (n_sick_max<n_sick){
+		 n_sick_max=n_sick;  //peak of the number of infected
+         n_sick_mIter=it;     //time step of peak of infected
+      }
+   }
+//  if(g.get_debug())  cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<endl;
+  if(g.get_debug())  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead/dn<<endl;
+   return;	
+}
+		

@@ -30,6 +30,7 @@ graph::graph(){
 	num_n=0;
 	nE=0;
 	grphtype=0;
+	boundarycond=0;
 	p=0;
 	c=0;
 	nL=0;
@@ -40,6 +41,7 @@ graph::graph(int a){
 	num_n=a;
 	nE=0;
 	//grphtype=0;
+	//boundarycond=0;
 	p=0;
 	c=0;
 	nL=0;

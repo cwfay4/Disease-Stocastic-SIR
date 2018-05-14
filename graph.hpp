@@ -76,6 +76,7 @@ class graph {
 	   // int n; //number of nodes in graph
 	    long seed;
 	    int grphtype; //integer used a switch to produce a graph of type
+	    int boundarycond;
 	    double p; //generator edge_prob
 	    double c;  //actual connectivity of graph	    
 	    int nL; //number of leaves
