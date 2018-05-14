@@ -1,9 +1,9 @@
 /***********************************************************************/
-/** LoPR Algorithm Control Program          _array                   ***/
+/** Disease stocastic SIR  Control Program                           ***/
 /**                                                                  ***/
 /** C. Fay August 2005                                               ***/
-/** Version 2.1.0.1   22.09.2005                                     ***/
-/** Run: vertcvr gml_filname seed                                    ***/
+/** Version 2.1.0.1   14.05.2005                                     ***/
+/** Run: Disease_m gml_filname seed                                  ***/
 /** Output:                                                          ***/
 /***********************************************************************/
 
@@ -32,8 +32,8 @@
 
 using namespace std;
 
-#define NUM_STEPS 1000
-#define NUM_ITER 100
+#define NUM_STEPS 500 //number of time steps
+//#define NUM_ITER 100
 //#define grphtypedflt 0
 //#define debug true
 
@@ -44,14 +44,16 @@ int main(int argc, char **argv){
 
    double Psum=0;
    double p=3.0;
-   bool write=true, dsply=false, histo=false, debug_test=true, fulloutput=false, conv=true;
+   bool write=true, dsply=false, histo=false, debug_test=false, fulloutput=false, conv=true;
    bool style=false; //is a new graph made for each pop.iteration or not
    boolcat b;
+   b.NUM_ITER=10;
    char *filename;
    char LoPR;
    int grphtype=0;  /* 0 for rndm, 1 for pt */
    long lseed[3]={0},lseedstart=-1, lseedblnk=lseedstart;
    dPOP pop;
+   pop.iteration=10;	  //controls the number of graphs averaged for each trial.  
    pop.lifetime=10;
    pop.I=false;
    pop.simple=false;
@@ -65,19 +67,9 @@ int main(int argc, char **argv){
    std::stringstream ss;
    std::string inputstr, inputfile;
    
-  // std::vector<std::stringstream> args;
- //  for (int i=1;i<argc;i++){
-  // 	  ss.clear();
-//	  ss.str(argv[i]);
- //     args.push_back(ss);
- //  }
+   inputprocessing(argc, argv,  g, pop, b,  ITERCASE); //this reads the command line for all of the relevant controls and values
    
- //  (argv + 1, argv + argc + !argc);
-   //pass_test(args);
-   //pass_test2(argc, argv);
-   inputprocessing(argc, argv,  g, pop, b,  ITERCASE);
-   
-   if(debug_test){ 
+   if(true){ 
       cout<<"g.grphtype="<<g.grphtype<<" lseedstart"<<b.lseedstart<<" ";
       cout<<"output control: w"<<b.write<<" disply"<<b.dsply<<" full"<<b.fulloutput<<" histo"<<b.histo<<" con"<<b.conv<<" debug"<<b.debug_test<<" "<<endl;
 	  cout<<"disease control: I"<<pop.I<<" simple"<<pop.simple<<" ITERCASE"<<ITERCASE<<" "<<pop.I<<" "<<pop.I<<" "<<endl;
@@ -112,17 +104,17 @@ int main(int argc, char **argv){
    if (g.grphtype ==-1) g.grphtype=0; //we are not loading a graph so make sure we are using the default - this will be replaced when we load graphs
    switch (ITERCASE){
       case 1:{  //iterate over contagin / virality
+         ITERSTOP=pop.contagin;
          pop.contagin=0.1;
          ITERSTEP=0.01;
          ITERSTART=pop.contagin;
-         ITERSTOP=10;
          break;
       }
       case 2:{ //iterate over fatality
+         ITERSTOP=pop.fatality;
 		 pop.fatality=0.01;
          ITERSTEP=0.01;
 		 ITERSTART= pop.fatality;
-		 ITERSTOP=1.00;
          break;
       }        
       case 3:{  //iterate over lifetime
@@ -133,18 +125,19 @@ int main(int argc, char **argv){
          break;
       }         
       default:{ //iterate over p
-		 g.p=0.1;
+		 //ITERSTOP=g.p;
+		 //g.p=0.1;
 		 ITERSTEP=0.1;
          ITERSTART=g.p;
-         ITERSTOP=10;
+         ITERSTOP=3.0;
          if (ITERSTOP>g.get_n()-1) ITERSTOP=g.get_n()-1; 		       
          break;
       }
    }
 
-   pop.iteration=1;	  //controls the number of graphs averaged for each trial.  
+   
 
-   double dn=(double)NUM_ITER;  
+   double dn=(double)pop.iteration;  
    while (ITERSTART<ITERSTOP){ //scan over interested quantity
 	      //std::vector <double> datum(10,0); //datum is a vector containing all of the average results, dadum sq is the square of the average results
 	     // std::vector <double> datumsq(10,0);//from these two we will calculate the standard error
@@ -157,9 +150,9 @@ int main(int argc, char **argv){
             datum.push_back(data);
         }
         datum[0].value=(double)g.get_n();
-        datum[0].value=(double)g.get_n()*(double)g.get_n();
+        datum[0].value_sq=(double)g.get_n()*(double)g.get_n();
 		 		  
-	    if (style==false){ //style controls if the average for NUM_ITER is many evolutions of one graph or one evolution of many graphs
+	    if (b.style==false){ //style controls if the average for NUM_ITER is many evolutions of one graph or one evolution of many graphs
 	       g.seed=lseed[0]; //false means that one graph is made and evolved several times.
 	       g.build_graph(false);
 		}   
@@ -173,7 +166,7 @@ int main(int argc, char **argv){
 	    //}
 	    
 	   for (int i=0; i<pop.iteration; i++){  //how many graphs do we average over per each iterator
-	        if (style==true){
+	        if (b.style==true){
 	           g.seed=lseed[0]; //change this
 	           g.build_graph(false);
 		    }   

@@ -38,7 +38,10 @@ class boolcat{
       bool debug_test;
       bool fulloutput;
       bool conv;
+      bool style;  //this controls one or many graphs averaged over
 	  int ITERCASE;	
+	  int NUM_ITER;
+//	  int NUM_GRAPH;
 	  long lseedstart;
 	  boolcat();
 };

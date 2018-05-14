@@ -34,7 +34,10 @@ boolcat::boolcat(){
    debug_test=false;
    fulloutput=false;
    conv=false;	
+   style=false;
    ITERCASE=-1;
+   NUM_ITER=100;
+  // NUM_GRAPH=10; actucally in dpop
    lseedstart=-1;
 }
 
@@ -272,6 +275,19 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       else if(inputstr.compare("-histo") == 0)     	b.histo=true; 
       else if(inputstr.compare("-conv") == 0)     	b.conv=true;  
       else if(inputstr.compare("-debug") == 0)     	b.debug_test=true;
+      else if(inputstr.compare("-multigraph") == 0) b.style=true; 
+      else if(inputstr.compare("-niterators") == 0) {
+	     i++;      	
+		  b.NUM_ITER=atof(argv[i]); //works
+		  if (b.debug_test) cout<<"NUM_ITER="<<b.NUM_ITER<<std::endl;
+		  j++;
+	  }
+	  else if(inputstr.compare("-ngraph") == 0) {
+	     i++;      	
+		  pop.iteration=atof(argv[i]); //works
+		  if (b.debug_test) cout<<"NUM_GRAPH="<<pop.iteration<<std::endl;
+		  j++;
+	  }
       else if(inputstr.compare("-h") == 0){  //help menu
 		Disease_usage(false); 
 		exit(1);  

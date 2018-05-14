@@ -12,7 +12,7 @@ using namespace std;
 Stats::Stats(){
    value=0;
    value_sq=0;
-   dsamp=0;
+   dsamp=1;
    return;
 }
 Stats::Stats(double dn){
@@ -21,9 +21,9 @@ Stats::Stats(double dn){
    dsamp=dn;
    return;	
 }
-void Stats::add_data(double datum){
+void Stats::add_data(double datum){ //dsamp is the number of graphs being run over
    //cout<<j<<endl;
-   value=value+datum/dsamp; //sum of datum
+   value=value+datum/dsamp; //sum of datum : should be an average
    value_sq=value_sq+value*value; //sum of square of data
    return;
 }

@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = Disease_basic_utils.o diseasePOP.o graph.o random.o Disease_c.o
-LINKOBJ  = Disease_basic_utils.o diseasePOP.o graph.o random.o Disease_c.o
+OBJ      = Disease_basic_utils.o diseasePOP.o graph.o random.o Disease_m.o
+LINKOBJ  = Disease_basic_utils.o diseasePOP.o graph.o random.o Disease_m.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -36,5 +36,5 @@ graph.o: graph.cpp
 random.o: random.cpp
 	$(CPP) -c random.cpp -o random.o $(CXXFLAGS)
 
-Disease_c.o: Disease_c.cpp
-	$(CPP) -c Disease_c.cpp -o Disease_c.o $(CXXFLAGS)
+Disease_m.o: Disease_m.cpp
+	$(CPP) -c Disease_m.cpp -o Disease_m.o $(CXXFLAGS)
