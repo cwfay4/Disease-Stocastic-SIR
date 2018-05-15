@@ -15,6 +15,7 @@ dPOP::dPOP () {
    n_sick=0;
    n_healthy =0;
    n_dead =0;
+   n_nc=0;
    p_Immune =0;
    p_sick =0;
    contagin =0;
@@ -43,6 +44,7 @@ void dPOP::clear(){
    n_sick=0;
    n_healthy =0;
    n_dead =0;
+   n_nc=0;
    return;	
 }
 void dPOP::randomize_node_list(int n, std::vector<int>& nlist, long &idum){
@@ -76,6 +78,7 @@ void dPOP::precondition(graph& g, long &seed){
       if (g.nodes[i].edges.size()==0){ //if node has no edges set to uncovered (0)
          g.nodes[i].frz=true;
 	     g.nodes[i].intState=-1; //isolated node ignore it
+	     n_nc++;  //if its isolated (no edges) add one to the n_nc counter
       }
       else if (ran2(&idum)<p_Immune){  // healthy immune
 	     g.nodes[i].intState=0;
@@ -94,7 +97,7 @@ void dPOP::precondition(graph& g, long &seed){
       }
       if (g.get_debug())cout<<i<<" state"<<g.nodes[i].intState<<" frz"<<g.nodes[i].frz<<endl;
    }
-   if (screen) cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<endl;
+   if (screen) cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<"non-connected"<<n_nc<<endl;
 //   g.calc_sum_P();
    return;   
 }
@@ -129,6 +132,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
 			if (!g.nodes[i].frz && g.nodes[i].intState==1){ //if you are sick but not dead
 			   if(debug) cout<<" you are sick but not dead"<<endl;
 			   if (g.nodes[i].stateP > lifetime && ran2(&idum)<p_Recovery){//adds the stipulation of a probability of recovery instead of just a lifetime
+
 				   if(ran2(&idum) < fatality || (simple && !I)){ //oops you died (could also be considered recovered/immune)
 					  g.nodes[i].frz =true;
 					  n_dead++;
@@ -151,7 +155,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
 			}			
 			else if (!g.nodes[i].frz && g.nodes[i].intState==0){ //if you are healthy, you might get sick.
 			  if(debug) cout<<" you are healthy"<<endl;
-			   double n_I=0;
+			   double n_I=0; //Is this the number of edges or interactions?
 			   for (int j=0; j < g.nodes[i].edges.size(); j++){//for all edges connedtd to i
 	               int n2=g.nodes[i].edges[j];
 	               if (g.nodes[n2].intState==1 && !g.nodes[n2].frz) n_I++; //a node that is frozen and sick is dead!
@@ -178,8 +182,9 @@ void dPOP::pop_evolve(graph& g, long seed2){
 	  
       if (conv){ 
 	     std::ofstream output("Disease_Conv.csv", ios_base::app);
-         output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
+         output<<it<<", "<<(double)n_healthy/(dn-n_nc)<<", "<<(double)n_sick/(dn-n_nc)<<", "<<(double)n_immune/(dn-n_nc)<<", "<<(double)n_dead/(dn-n_nc)<<endl;
 	     output.close();
+	     
       }
      // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
       if (n_sick_max<n_sick){
@@ -188,7 +193,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
       }
    }
 //  if(g.get_debug())  cout<<" sick "<<n_sick<<" Healthy "<<n_healthy<<" Immune "<<n_immune<<" dead "<<n_dead<<endl;
-  if(g.get_debug())  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead/dn<<endl;
+  if(g.get_debug())  cout<<" sick "<<(double)n_sick/(dn-n_nc)<<" Healthy "<<(double)n_healthy/(dn-n_nc)<<" Immune "<<(double)n_immune/(dn-n_nc)<<" dead "<<(double)n_dead/(dn-n_nc)<<endl;
    return;	
 }
 	
