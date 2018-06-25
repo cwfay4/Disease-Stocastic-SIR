@@ -1,37 +1,23 @@
+/***********************************************************************/
+/** Disease stocastic SIR  Disease Population Algorithms             ***/
+/**                                                                  ***/
+/** C. Fay June 2018                                                 ***/
+/** Version 1.0   4.06.2005                                          ***/
+/** Output:                                                          ***/
+/***********************************************************************/
+
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include "stats.hpp"
 #include "random.hpp"
 #include "graph.hpp"
 #include "diseasePOP.hpp"
 
 using namespace std;
-
-Stats::Stats(){
-   value=0;
-   value_sq=0;
-   dsamp=1;
-   return;
-}
-Stats::Stats(double dn){
-   value=0;
-   value_sq=0;
-   dsamp=dn;
-   return;	
-}
-void Stats::add_data(double datum){ //dsamp is the number of graphs being run over
-   //cout<<j<<endl;
-   value=value+datum/dsamp; //sum of datum : should be an average
-   value_sq=value_sq+value*value; //sum of square of data
-   return;
-}
-double Stats::standard_error(){
-	double var=sqrt(abs(value_sq-(value*value)))/sqrt(dsamp-1);//calculate std error;
-	std_error=var;
-	return var;
-}
 
 dPOP::dPOP () {
    n_immune =0;
@@ -45,10 +31,11 @@ dPOP::dPOP () {
    I=false;
    randomvectors=false;
    lifetime=100; 
-   POP_STEPS=P_STEPS;  
+   POP_STEPS=P_STEPS;
+   Evolve_STEPS=1;  
    return;
 }
-dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h) {  //I don't know if I am using this
+dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h, int life, bool b1, bool b2) {  //I don't know if I am using this
    n_immune =a;
    n_sick=b;
    n_healthy =c;
@@ -57,10 +44,12 @@ dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h) 
    p_sick =f;
    contagin =g;
    fatality =h;   
-   lifetime=100; 
-   I=false;
+   lifetime=life; 
+   I=b1;
+   simple=b2;
    randomvectors=false;
    POP_STEPS=P_STEPS;
+   Evolve_STEPS=1;    
    return;
 }
 void dPOP::clear(){
@@ -218,7 +207,7 @@ void dPOP::pop_evolve(graph& g, long seed2){
   if(g.get_debug())  cout<<" sick "<<(double)n_sick/dn<<" Healthy "<<(double)n_healthy/dn<<" Immune "<<(double)n_immune/dn<<" dead "<<(double)n_dead/dn<<endl;
    return;	
 }
-void dPOP::pop_evolve(graph& g, long seed2, std::vector <Stats>& convergence_ave){
+void dPOP::pop_evolve(graph& g, long seed2, iteration_stats& convergence_ave){
 	bool conv=true;
 	bool debug=false;
 	long idum=seed2;
@@ -301,11 +290,11 @@ void dPOP::pop_evolve(graph& g, long seed2, std::vector <Stats>& convergence_ave
          output<<it<<", "<<(double)n_healthy/dn<<", "<<(double)n_sick/dn<<", "<<(double)n_immune/dn<<", "<<(double)n_dead/dn<<endl;
 	     output.close();
       }
-      if (iteration>1){
-      	   convergence_ave[0].add_data((double)n_healthy/dn);
-      	   convergence_ave[1].add_data((double)n_sick/dn);
-      	   convergence_ave[2].add_data((double)n_immune/dn);
-      	   convergence_ave[3].add_data((double)n_dead/dn);
+      if (Evolve_STEPS>1){//we want this to be an average of the values over each iteration.
+            convergence_ave.increase_element(it, 0, (double)n_healthy/dn);  
+            convergence_ave.increase_element(it, 1, (double)n_sick/dn);  
+		    convergence_ave.increase_element(it, 2, (double)n_immune/dn);  
+			convergence_ave.increase_element(it, 3, (double)n_dead/dn);  
 	  }
      // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
       if (n_sick_max<n_sick){

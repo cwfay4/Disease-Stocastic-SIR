@@ -1,5 +1,5 @@
-#ifndef GRAPH_H
-#define GRAPH_H
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <cmath>
 
@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "graph.hpp"
+//#include "graph.hpp"
 #include "random.hpp"
 
 using namespace std;

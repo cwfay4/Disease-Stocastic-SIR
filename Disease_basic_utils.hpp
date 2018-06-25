@@ -1,7 +1,7 @@
 /*** include file for clstrfns.cpp ***/
 
-#ifndef _Disease_basic_utils_H_
-#define _Disease_basic_utils_H_
+#ifndef _Disease_basic_utils_HPP
+#define _Disease_basic_utils_HPP
 
 #include <cstdio>                                     
 #include <cstdlib>

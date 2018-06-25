@@ -1,11 +1,9 @@
 /***********************************************************************/
-/** crprcfns                                                         ***/
+/** Disease stocastic SIR  Control subroutines                       ***/
 /**                                                                  ***/
-/** C. Fay Jan 2003                                                  ***/
-/** Version 2.0.0.0   05.10.2004                                     ***/
-/** Run: crprcfnsgraph gml_filename                                  ***/
-/** Output: dat files that can be opened by xmgrace as a visual      ***/
-/**        representation of the graph                               ***/
+/** C. Fay June 2018                                                 ***/
+/** Version 1.0   4.06.2005                                          ***/
+/** Output:                                                          ***/
 /***********************************************************************/
 
 #include <cstdio>                                     
@@ -284,8 +282,8 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 	  }
 	  else if(inputstr.compare("-ngraph") == 0) {
 	     i++;      	
-		  pop.iteration=atof(argv[i]); //works
-		  if (b.debug_test) cout<<"NUM_GRAPH="<<pop.iteration<<std::endl;
+		  pop.Evolve_STEPS=atof(argv[i]); //works
+		  if (b.debug_test) cout<<"NUM_GRAPH="<<pop.Evolve_STEPS<<std::endl;
 		  j++;
 	  }
       else if(inputstr.compare("-h") == 0){  //help menu

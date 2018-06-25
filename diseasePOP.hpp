@@ -1,5 +1,5 @@
-#ifndef DiseasePOP_H
-#define DiseasePOP_H
+#ifndef DiseasePOP_HPP
+#define DiseasePOP_HPP
 
 #include <cmath>
 
@@ -8,22 +8,13 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "stats.hpp"
 #include "graph.hpp"
 #include "random.hpp"
-#include "diseasePOP.hpp"
+//#include "diseasePOP.hpp"
 
 #define P_STEPS 500
-class Stats{
-   public:
-      double value;
-      double value_sq;
-      double std_error;
-      void add_data(double);
-      double dsamp;
-      double standard_error();
-      Stats();
-      Stats(double);
-};
+
 class dPOP{
 	private:
 	   void randomize_node_list(int, std::vector<int>& , long&);
@@ -35,7 +26,8 @@ class dPOP{
 	   int n_sick_mIter;
 	   int n_healthy;
 	   int n_dead;
-	   int POP_STEPS;
+	   int POP_STEPS;  //number of time steps
+	   int Evolve_STEPS; //number of similar evolutions
 	   double lifetime;
 	   double p_Immune;
 	   double p_sick;
@@ -43,15 +35,15 @@ class dPOP{
 	   double fatality;
 	   double p_Recovery;	
 	   bool I;  //switch for immunity and death
-	   int iteration;
+	  // int iteration;
 	   bool randomvectors;
 	   bool simple; //switch for immunity and additional random new illness;
-	   dPOP (int, int, int, int, double, double, double, double);
+	   dPOP (int, int, int, int, double, double, double, double, int, bool, bool);
 	   dPOP ();
 	   void clear ();
 	   void precondition(graph& , long &);
 	   void pop_evolve(graph&, long int);
-	   void pop_evolve(graph&, long int, std::vector <Stats>&);
+	   void pop_evolve(graph&, long int, iteration_stats&);
 
 };
 
