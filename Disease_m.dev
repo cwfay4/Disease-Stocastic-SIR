@@ -23,12 +23,12 @@ OverrideOutputName=
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
-CommandLine=
+CommandLine=-debug -debug_graph -sclf -ngraph 3 -pc 1000 .9 .01 .03 .08 0 10
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000000000000
+CompilerSettings=0000000000000000001000000
 UnitCount=18
 
 [VersionInfo]

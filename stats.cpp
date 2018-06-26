@@ -10,11 +10,11 @@
 using namespace std;
 
 Stats::Stats (){
-   value=0;
-   value_sq=0;
-   average_value=0;
-   std_error=0;
-   dsamp=0;
+   value=0.0;
+   value_sq=0.0;
+   average_value=0.0;
+   std_error=0.0;
+   dsamp=0.0;
    return;
 }
 Stats::Stats (double dn){
@@ -55,6 +55,8 @@ void Stats::set_NumberSample(double a){
 }
 void Stats::add_data(double datum){ //dsamp is the number of graphs being run over
    //cout<<j<<endl;
+   	if(false)  cout<<"stats add data "<<value<<" "<<datum<<endl;
+
    value=value+datum; //sum of datum : should be an average
    value_sq=value_sq+value*value; //sum of square of data
    dsamp=dsamp+1; //running count of the number of data points
@@ -131,8 +133,11 @@ void group_stats::set_NumberSample(int a, double db){
 	return;
 }
 void group_stats::increase_element(int a, double value){
+//	if(true)  cout<<"group stats increasing element "<<a<<" "<<value<<" "<<stats_group.size()<<endl;
 	//add value to the running sum of element [a] 
 	stats_group[a].add_data(value);
+//	if(true)  cout<<"group stats increase element successful"<<a<<" "<<value<<endl;
+	
     return;
 }
 double group_stats::get_value(int a){
@@ -190,10 +195,14 @@ iteration_stats::iteration_stats(int a, int b){
 void iteration_stats::add_element(int a){
 //	group_stats gpstats;
   	for (int i=0; i<a; i++){ //put num_n nodes into the graph
-		group_stats gpstats;
+		group_stats gpstats(1);
 		it_stats_vect.push_back(gpstats);
 	}  	
 	return;
+}
+void iteration_stats::add_elementsof(int a){
+	group_stats gpstats(a);
+	it_stats_vect.push_back(gpstats);
 }
     	void set_value(int, double);
    	    void set_average_value(int, double);
@@ -201,7 +210,10 @@ void iteration_stats::add_element(int a){
    	    void set_std_error(int, double);
    	    void set_NumberSample(int, double);
 void iteration_stats::increase_element(int stepvalue, int a, double value){
-	it_stats_vect[stepvalue].stats_group[a].add_data(value);
+//	if(true)  cout<<"macro increasing element "<<stepvalue<<" "<<a<<" "<<value<<endl;
+	it_stats_vect[stepvalue].increase_element(a, value);
+//	it_stats_vect[stepvalue].stats_group[a].add_data(value);
+//	if(true)  cout<<"macro increase element successful"<<endl;
     return;
 }
 

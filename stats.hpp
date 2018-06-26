@@ -63,6 +63,7 @@ class iteration_stats{
     	iteration_stats();
     	iteration_stats(int, int);
     	void add_element(int);
+     	void add_elementsof(int);   	
     	void set_value(int, double);
    	    void set_average_value(int, double);
    	    void set_value_sq(int, double);

@@ -52,6 +52,7 @@ int main(int argc, char **argv){
    
    graph g;
    g.grphtype=grphtypedflt;
+   g.set_debug(false);
    
  //  std::stringstream ss;
  //  std::string inputstr, inputfile;
@@ -92,12 +93,12 @@ int main(int argc, char **argv){
    }
    if (b.debug_test) cout<<lseedblnk<<" "<<b.lseedstart<<" ran2 initialized "<<std::endl;
    if (b.debug_test) cout<<g.get_n()<<" "<<g.p<<" "<<b.lseedstart<<" "; 
-   if (b.debug_test) cout<<" preparing to make a graph "<<endl; 
-   
 //**************************************************************** 
 //****** Set iteration values ************************************  
-   g.set_debug(b.debug_test);
+   //g.set_debug(b.debug_test);
    if (g.grphtype ==-1) g.grphtype=0; //we are not loading a graph so make sure we are using the default - this will be replaced when we load graphs
+   if (b.debug_test) cout<<" intial graph parameters set: preparing to make a graph "<<endl;    
+   
    switch (ITERCASE){
       case 1:{  //iterate over contagin / virality
          ITERSTOP=pop.contagin;
@@ -125,11 +126,15 @@ int main(int argc, char **argv){
 		 //g.p=0.1;
 		 ITERSTEP=0.1;
          ITERSTART=g.p;
-         ITERSTOP=3.0;
-         if (ITERSTOP>g.get_n()-1) ITERSTOP=g.get_n()-1; 		       
+         ITERSTOP=1.5;
+         if (ITERSTART>ITERSTOP) ITERSTOP=ITERSTART+ITERSTEP*10;
+         if (ITERSTOP>g.get_n()-1) ITERSTOP=g.get_n()-1; 
+		 if (b.debug_test) cout<<"pc ITERSTART,ITERSTOP "<<ITERSTART<<","<<ITERSTOP<<endl;		       
          break;
       }
    }
+   
+   if (b.debug_test) cout<<"Initial iteration parameters set"<<endl;
 
    // In this group(s) of iterations we track stats for two collections.  Each pop.evolve is run for POP_STEPS
    // time steps.  We run pop.Evolve_STEPS number of evolutions.  We run evolutions over each iteration step, for a total of
@@ -139,16 +144,23 @@ int main(int argc, char **argv){
    iteration_stats macrodata;  //will have macro_it_count values averaged over Evolve_STEPS number of evolutions
    // macrodata stores: n, nE, c, n_sick, n_healthy, n_immune, n_dead, n_sick_max all values are final state values.
    int macro_it_count=0;
+   
+   if (b.debug_test) cout<<"Prepared for iteration loop"<<endl;   
    while (ITERSTART<ITERSTOP){ //scan over interested quantity
-        macrodata.add_element(8);//adds a new element for each macro_it_count;
+        if (b.debug_test) cout<<"iteration loop "<<macro_it_count<<" "<<ITERSTART<<" "<<ITERSTOP<<endl; 
+        
+        macrodata.add_elementsof(8);//adds a new element for each macro_it_count;  it adds with 8 spaces for macro data.
+        if (b.debug_test) cout<<"macrodata.add_element"<<macro_it_count+1<<endl;         
         macrodata.increase_element(macro_it_count, 0, (double)g.get_n());
-		macro_it_count++; 	
-			  
+        
+		if (b.debug_test) cout<<"macrodata.increased_element"<<macro_it_count<<endl;             	    
+        if (b.debug_test) cout<<"building graph"<<endl;   	    
+	    
 	    if (b.style==false){ //style controls if the average for NUM_ITER is many evolutions of one graph or one evolution of many graphs
 	       g.seed=lseed[0];  //false means that one graph is made and evolved several times.
 	       g.build_graph(false);
 		}   
-          
+       if (b.debug_test) cout<<"Iteration loop built graph"<<endl;   
        // if (pop.Evolve_STEPS>1){ //we have more than one graph for each iterator value, thus we will average over each pop.evolve step
        iteration_stats microdata(pop.POP_STEPS, 4); //this will save the values for each pop.evolve step per one iteration;
 	    
@@ -157,25 +169,38 @@ int main(int argc, char **argv){
 	           g.seed=lseed[0]; //change this
 	           g.build_graph(false);
 		    }   
-	        if(false)cout<<" type: "<<g.grphtype<<" ITERNUM "<<dn<<" n: "<<g.get_n()<<" nE: "<<g.get_nE()<<" nE: "<<g.calc_nE()<<" c: "<<g.get_c()<<endl;
+	        if(b.debug_test)cout<<" type: "<<g.grphtype<<" ITERNUM "<<dn<<" n: "<<g.get_n()<<" nE: "<<g.get_nE()<<" nE: "<<g.calc_nE()<<" c: "<<g.get_c()<<endl;
 	  
 	      //vce_precon(g, lseed[1], pop);
 	      //disease_pop(g, pop, lseed[2]);
 	      
 	        pop.precondition(g, lseed[1]);
 	      
-	        if (pop.Evolve_STEPS<=1) pop.pop_evolve(g, lseed[2]);
-	        else {
-		       pop.pop_evolve(g,lseed[2],microdata);
-		    }
+	        if(b.debug_test)cout<<" precondition finished:  n_sick "<<pop.n_sick<<" "<<pop.n_healthy<<" "<<pop.n_immune<<endl;
 	        
-	        macrodata.increase_element(macro_it_count, 1, (double)g.get_nE());
-	        macrodata.increase_element(macro_it_count, 2, (double)g.get_c());
-	        macrodata.increase_element(macro_it_count, 3, ((double)pop.n_sick/(double)g.get_n()));
-	        macrodata.increase_element(macro_it_count, 4, ((double)pop.n_healthy/(double)g.get_n()));
-	        macrodata.increase_element(macro_it_count, 5, ((double)pop.n_immune/(double)g.get_n()));
-	        macrodata.increase_element(macro_it_count, 6, ((double)pop.n_dead/(double)g.get_n()));
-	        macrodata.increase_element(macro_it_count, 7, ((double)pop.n_sick_max/(double)g.get_n()));
+	        if (pop.n_sick>=1) { //just incase there is no one sick after the precondition
+	            	            
+			    if (pop.Evolve_STEPS<=1) {
+			    	if (b.debug_test)cout<<"run pop_evolve(g,lseed[2])"<<endl;
+			    	pop.pop_evolve(g, lseed[2]);
+				}
+	            else {
+	            	if (b.debug_test)cout<<"run pop_evolve(g,lseed[2],microdata)"<<endl;
+	            //	pop.debug=b.debug_test;
+		            pop.pop_evolve(g,lseed[2],microdata); //problem here
+		        }
+	    	}
+	        
+	        if(b.debug_test)cout<<" pop evolve finished: "<< g.get_n()<<" "<<g.get_nE()<<" "<<g.get_c()<<" n_sick "<<pop.n_sick<<" "<<pop.n_healthy<<" "<<pop.n_immune<<" "<<pop.n_dead<<" "<<pop.n_sick_max<<endl;
+            double doublenum=(double)g.get_n();
+			macrodata.increase_element(macro_it_count, 1, (double)g.get_nE());
+	        macrodata.increase_element(macro_it_count, 2, g.get_c());
+	        macrodata.increase_element(macro_it_count, 3, (double)pop.n_sick/doublenum);
+	        macrodata.increase_element(macro_it_count, 4, (double)pop.n_healthy/doublenum);
+	        macrodata.increase_element(macro_it_count, 5, (double)pop.n_immune/doublenum);
+	        macrodata.increase_element(macro_it_count, 6, (double)pop.n_dead/doublenum);
+	        macrodata.increase_element(macro_it_count, 7, (double)pop.n_sick_max/doublenum);
+	        if(b.debug_test)cout<<"macro data stored"<<endl;
 							         
 	   } //End of Pop.iteration loop
 	   
@@ -219,6 +244,7 @@ int main(int argc, char **argv){
                break;
             }
        } //end ITERCASE Switch
+         macro_it_count++;   
     }//End Iterstop while loop
     macrodata.calc_stats((double)macro_it_count);
 	macrodata.output_elements(macro_it_count, 8, "d-steadystate.csv"); //This will output the average values for each step of the pop.iteration 

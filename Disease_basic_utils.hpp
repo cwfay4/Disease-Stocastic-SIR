@@ -3,23 +3,18 @@
 #ifndef _Disease_basic_utils_HPP
 #define _Disease_basic_utils_HPP
 
-#include <cstdio>                                     
-#include <cstdlib>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <sstream>
+//#include <cstdio>                                     
+//#include <cstdlib>
+//#include <cmath>
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
 #include <string>
-#include <iomanip>
+//#include <iomanip>
 #include <vector>
 
-#include "diseasePOP.hpp"
-#include "graph.hpp"
-#include "Disease_basic_utils.hpp"
-//#include "tp.hpp"
-
-//#include "LoPR_alg_o.hpp"
-
+//#include "diseasePOP.hpp"
+//#include "graph.hpp"
 
 //#define NUM_STEPS 25
 //#define MASK 123459876

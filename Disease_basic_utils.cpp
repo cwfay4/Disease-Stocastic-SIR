@@ -273,18 +273,19 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       else if(inputstr.compare("-histo") == 0)     	b.histo=true; 
       else if(inputstr.compare("-conv") == 0)     	b.conv=true;  
       else if(inputstr.compare("-debug") == 0)     	b.debug_test=true;
+      else if(inputstr.compare("-debug_graph")==0)  g.set_debug(true);
       else if(inputstr.compare("-multigraph") == 0) b.style=true; 
-      else if(inputstr.compare("-niterators") == 0) {
+      else if(inputstr.compare("-niterators") == 0) { //this is a dummy right now
 	     i++;      	
 		  b.NUM_ITER=atof(argv[i]); //works
 		  if (b.debug_test) cout<<"NUM_ITER="<<b.NUM_ITER<<std::endl;
-		  j++;
+		 // j++;
 	  }
-	  else if(inputstr.compare("-ngraph") == 0) {
+	  else if(inputstr.compare("-ngraph") == 0) {//number of evolutions
 	     i++;      	
 		  pop.Evolve_STEPS=atof(argv[i]); //works
 		  if (b.debug_test) cout<<"NUM_GRAPH="<<pop.Evolve_STEPS<<std::endl;
-		  j++;
+		 // j++;
 	  }
       else if(inputstr.compare("-h") == 0){  //help menu
 		Disease_usage(false); 
@@ -365,7 +366,8 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 		  j++;
 	  }
 	  else if(j==6){ //sickness duration
-		  pop.lifetime=atof(argv[i]); //works
+		 // pop.lifetime=atof(argv[i]); //works
+		  pop.p_Recovery=atof(argv[i]); //works
 		  if (b.debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
 		  j++;
 	  }	  

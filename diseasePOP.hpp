@@ -1,16 +1,16 @@
 #ifndef DiseasePOP_HPP
 #define DiseasePOP_HPP
 
-#include <cmath>
+//#include <cmath>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
+//#include <string>
+//#include <vector>
 #include "stats.hpp"
 #include "graph.hpp"
-#include "random.hpp"
+//#include "random.hpp"
 //#include "diseasePOP.hpp"
 
 #define P_STEPS 500
@@ -38,10 +38,12 @@ class dPOP{
 	  // int iteration;
 	   bool randomvectors;
 	   bool simple; //switch for immunity and additional random new illness;
+	   bool debug;
 	   dPOP (int, int, int, int, double, double, double, double, int, bool, bool);
 	   dPOP ();
 	   void clear ();
 	   void precondition(graph& , long &);
+	   void pop_evolve_lifetime(graph&, long int);
 	   void pop_evolve(graph&, long int);
 	   void pop_evolve(graph&, long int, iteration_stats&);
 
