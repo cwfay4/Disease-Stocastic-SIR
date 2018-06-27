@@ -1352,17 +1352,17 @@ void graph::build_graph(bool write){
 		  
       	  break;
 	  }
-	  case 10:{
+	  case 10:{ //-hcm
 	  	  build_random_HCM(size_co, p_w);
 	  	  if(debug) cout<<"Built Random HCM"<<endl;
 		  break;		  
 	  }  
-	  case 11:{
+	  case 11:{  //-hcmsclf
 	  	  build_sclf_HCM(size_co, p_w);
 	  	  if(debug) cout<<"Built Scale-free HCM"<<endl;
 		  break;
 	  } 
-	  case 12:{
+	  case 12:{  //-cm
 	  	  build_random_CM(size_co);
 	  	  if(debug) cout<<"Built Random CM"<<endl;
 		  break;

@@ -115,7 +115,7 @@ int main(int argc, char *argv[]){
 	  	if(debug_test) {
 		  cout<<"community size = "<<g.size_co<<endl;}
 		ss.clear();
-	  }
+	  } 
 //      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
  //     	g.grphtype=8;
 //	    i++;
@@ -307,6 +307,6 @@ int main(int argc, char *argv[]){
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick<<" p_sick_max= "<<pop.n_sick_max;
    cout<<" contagin= "<<pop.contagin<<endl;
    cout<<"fatality="<<pop.fatality<<" p_Immune= "<<pop.p_Immune<<" lifetime= "<<pop.lifetime<<" p_Recovery= "<<pop.p_Recovery<<endl;
-   
+   //cout<<g.grphtype<<endl;
    return 0;
 }
