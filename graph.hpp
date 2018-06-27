@@ -1,15 +1,15 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <cmath>
+//#include <cmath>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include "graph.hpp"
-#include "random.hpp"
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
+//#include <string>
+//#include <vector>
+//#include "graph.hpp"
+//#include "random.hpp"
 
 using namespace std;
 
