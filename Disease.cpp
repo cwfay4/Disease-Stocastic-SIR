@@ -72,7 +72,50 @@ int main(int argc, char *argv[]){
       else if(inputstr.compare("-sq") == 0) g.grphtype=5;   //squareLattice     
       else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
       else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
-      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
+      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice 
+	  else if(inputstr.compare("-hcm") == 0) {
+	  	g.grphtype=10;
+	  	ss.clear();
+	  	i++;
+	  	ss>>dummy;
+	  	dummy=atoi(argv[i]);
+	  	g.set_size_co(dummy);
+	  	ss.clear();
+	  	if(debug_test) {
+		  cout<<"average size of community = "<<g.size_co<<endl;}
+	  	i++;
+	  	g.p_w=atof(argv[i]);
+	  	if(debug_test) {
+		  cout<<"probability of an edge = "<<g.p_w<<endl;}
+		ss.clear();
+	  } 
+	  else if(inputstr.compare("-hcmsclf") == 0) {
+	  	g.grphtype=11;
+	  	ss.clear();
+	  	i++;
+	  	ss>>dummy;
+	  	dummy=atoi(argv[i]);
+	  	g.set_size_co(dummy);
+	  	if(debug_test) {
+		  cout<<"size of community = "<<g.size_co<<endl;}
+	  	ss.clear();
+		i++;
+	  	g.p_w=atof(argv[i]);
+	  	if(debug_test) {
+		  cout<<"probability of an edge = "<<g.p_w<<endl;}
+	  }
+	  else if(inputstr.compare("-cm") == 0){
+	  	g.grphtype=12;
+	  	ss.clear();
+	  	i++;
+	  	ss>>dummy;
+	  	dummy=atoi(argv[i]);
+	  	g.set_size_co(dummy);
+	  	ss.clear();
+	  	if(debug_test) {
+		  cout<<"community size = "<<g.size_co<<endl;}
+		ss.clear();
+	  } 
 //      else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
  //     	g.grphtype=8;
 //	    i++;
@@ -116,9 +159,10 @@ int main(int argc, char *argv[]){
       else if(j==0){  //input # of nodes
 		  ss>>dummy;
 		  dummy=atoi(argv[i]);
-		  if (g.grphtype==1 || g.grphtype==2 || g.grphtype==3 || g.grphtype==4 || g.grphtype==5){
-		     g.set_L(dummy);
-		     if(g.grphtype==1 || g.grphtype==2 || g.grphtype==5){
+		  if (g.grphtype==12) g.set_n(dummy, g.size_co);
+		  else if (g.grphtype==1 || g.grphtype==2 || g.grphtype==3 || g.grphtype==4 || g.grphtype==5){
+		    g.set_L(dummy);
+		    if(g.grphtype==1 || g.grphtype==2 || g.grphtype==5){
 				 dummy = pow(g.get_L(),2);
 				  g.set_n(dummy);
 		     }
@@ -157,10 +201,10 @@ int main(int argc, char *argv[]){
 		  if (debug_test) cout<<"p_Immune="<<ss.str()<<" "<<pop.p_Immune<<std::endl;
 		  j++;
 	  }
-	  else if(j==6){ //sickness duration or probability of recovery
-		  pop.p_Recovery=atof(argv[i]); //added a new parameter, probability of recovery
-		  pop.lifetime=0; //works, initializing lifetime to be zero but in a way so it can be changed later
-		  if (debug_test) cout<<"p_Recovery="<<ss.str()<<" "<<pop.p_Recovery<<std::endl;
+	  else if(j==6){ //sickness duration and probability of recovery
+		  pop.p_Recovery=atof(argv[i]);//sets lifetime to zero and reads prob of recovery instead
+		  pop.lifetime=0; //works
+		  if (debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
 		  j++;
 	  }	  
 //	  if (lseedstart==-1) lseedstart=time(0);   //starting seed
@@ -187,8 +231,8 @@ int main(int argc, char *argv[]){
    }
    
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<"p_Recovery="<<pop.p_Recovery<<endl;
-   cout<<" lifetime= "<<pop.lifetime<<endl;
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<endl;
+   cout<<"p_Immune="<<pop.p_Immune<<" lifetime= "<<pop.lifetime<<" p_Recovery= "<<pop.p_Recovery<<endl;
 //*****************************************************************        
    std::string gt="p", rnt="-r2", sbc="f";
    std::ostringstream strs;
@@ -244,9 +288,9 @@ int main(int argc, char *argv[]){
    double c=g.get_c();
       if (debug_test) cout<<g.c<<std::endl;
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatal
-   ity="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<endl;
-//   if (false) {
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<endl;
+   cout<<"p_Immune="<<pop.p_Immune<<" p_Recovery= "<<pop.p_Recovery<<endl;
+
 //      cout<<n<<" "<<p<<" "<<c<<" "<<nE<<" "<<lseed[0]<<" "<<lseed[1]<<" "<<lseed[2];        
 //   }
 //   else cout<<c<<" "<<nE<<" "<<" ";
@@ -256,11 +300,13 @@ int main(int argc, char *argv[]){
     
   // disease_pop(g, pop, lseed[2]);
    pop.pop_evolve(g, lseed[2]);   
-   if (debug_test) cout<<"disease pop finished"<<std::endl;   
-   
+   if (debug_test) cout<<"disease pop finished"<<std::endl;  
+    
+   cout<<"Max Sick="<<pop.n_sick_max<<endl;
+   cout<<"Time of Max Sick="<<pop.n_sick_mIter<<endl;
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick<<" p_sick_max= "<<pop.n_sick_max;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
-   cout<<" lifetime= "<<pop.lifetime<<"p_Recovery="<<pop.p_Recovery<<endl;
-   
+   cout<<" contagin= "<<pop.contagin<<endl;
+   cout<<"fatality="<<pop.fatality<<" p_Immune= "<<pop.p_Immune<<" lifetime= "<<pop.lifetime<<" p_Recovery= "<<pop.p_Recovery<<endl;
+   //cout<<g.grphtype<<endl;
    return 0;
 }

@@ -1,9 +1,11 @@
 /***********************************************************************/
-/** Disease stocastic SIR  Control subroutines                       ***/
+/** crprcfns                                                         ***/
 /**                                                                  ***/
-/** C. Fay June 2018                                                 ***/
-/** Version 1.0   4.06.2005                                          ***/
-/** Output:                                                          ***/
+/** C. Fay Jan 2003                                                  ***/
+/** Version 2.0.0.0   05.10.2004                                     ***/
+/** Run: crprcfnsgraph gml_filename                                  ***/
+/** Output: dat files that can be opened by xmgrace as a visual      ***/
+/**        representation of the graph                               ***/
 /***********************************************************************/
 
 #include <cstdio>                                     
@@ -32,57 +34,6 @@ boolcat::boolcat(){
    debug_test=false;
    fulloutput=false;
    conv=false;	
-   style=false;
-   ITERCASE=-1;
-   NUM_ITER=100;
-  // NUM_GRAPH=10; actucally in dpop
-   lseedstart=-1;
-}
-
-std::string outputname(graph g, dPOP pop){
-   std::string gt="p", rnt="r2", sbc="f", pre="p";
-   std::ostringstream strs;
-   strs << g.get_n();
-   std::string nstr = strs.str();
-   strs << g.p;
-   std::string pstr = strs.str();  
-   if (g.bc==1) sbc="p";
-   else if (g.bc==2) sbc="pp";
-   if (g.grphtype == 0 || g.grphtype==7) gt="r";
-   else if (g.grphtype == 2) rnt="r3";
-   else if (g.grphtype == 3) gt="f";
-   else if (g.grphtype == 4) gt="c";
-   else if (g.grphtype == 5) gt="sq";
-   else if (g.grphtype == 6) gt="sclf";
-   else if (g.grphtype == 8) gt="bb";
-   //std::string gname="d-"+gt+nstr+"-"+pstr+"-"+sbc+rnt;
-   std::string gname="d"+nstr+sbc+rnt+"ss.csv";
-   
-   //strs << pop.p_sick;
-   //std::string psstr = strs.str();
-   //strs << pop.p_Immune;
-   //std::string pistr = strs.str(); 
-   //strs << pop.contagin;
-   //std::string constr = strs.str();
-   //strs << pop.fatality;
-   //std::string fatalstr = strs.str(); 
-  //strs << pop.lifetime;
-   //std::string lifelstr = strs.str();
-   //if (ITERCASE==1) pre="v";
-   //else if(ITERCASE==2) pre="f";
-   //else if(ITERCASE==3) pre="l";   
-   //if (pop.simple) pre+="s";   
-   //if (pop.I) pre+="I";
-   //std::string dname=pre+"-"+psstr+"-"+pistr+"-"+constr+"-"+fatalstr+"-"+lifelstr;
-   
-  // std::ofstream dout("dout.csv");
-   //std::string oname=gname+dname+"ss.csv";
-   //std::string oname="disease"+"ss.csv";
-  // cout<<gname<<endl;
-   //cout<<dname<<endl;
-  // if (false) cout<<dname<<std::endl;
-
-    return gname;
 }
 
 void Disease_usage(bool verbose) {
@@ -199,24 +150,11 @@ void Disease_usage(bool verbose) {
     
   exit(1);
 }
-void pass_test(std::vector<std::string>* args){
-	return;
-}
-void pass_test2(int& argc, char **argv){
-	return;
-}
-
-
-void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, int& ITERCASE){
+void Disease_input(int argc, char *argv[], graph g, dPOP pop, boolcat b, int ITERCASE){
    int argz = 1;
    int dummy;  
    std::stringstream ss;
    std::string inputstr, inputfile;
-   b.debug_test=false;
-   
-   //for (int i = 1; i < argc; i++) {
-   //   cout<<"i="<<i<<" "<<argv[i]<<" ";	
-   //}
    
 //******** Input processing ***********************************************************
    int i, j=0;
@@ -231,18 +169,17 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       else if(inputstr.compare("-sq") == 0)   g.grphtype=5;  //squareLattice     
       else if(inputstr.compare("-sclf") == 0) g.grphtype=6;   //scale free Lattice
       else if(inputstr.compare("-staticsclf") == 0) g.grphtype=7;   //scale free Lattice      
-      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice    
-      
+      else if(inputstr.compare("-bb") == 0) g.grphtype=8;   //scale free Lattice          
+      else if(inputstr.compare("-rnd2") == 0) g.grphtype=7;   //random Lattice type 2
  //     else if(inputstr.compare("-bb") == 0) {                 //bethe lattice?
-//      	g.grphtype=8;
-// 	    i++;
-// 		ss>>dummy;
-// 		dummy=atoi(argv[i]);
-// 		int L =dummy;
-// 	    g.set_L(dummy);
-//	     g.set_L(atoi(argv[argz]));
-//	     cout<<"nkernal: "<<g.get_L()<<" ";
-// 	  }
+ //     	g.grphtype=8;
+//	    i++;
+//		ss>>dummy;
+//		dummy=atoi(argv[i]);
+//	    g.set_L(dummy);
+	   // g.set_L(atoi(argv[argz]));
+	    //cout<<"nkernal: "<<L<<" ";
+//	  }
       else if(inputstr.compare("-rndfixedc") == 0||inputstr.compare("-rf") ==0){          //random fixed connectivity
       	g.grphtype=9;
 	    i++;
@@ -251,21 +188,9 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 	    g.set_L(dummy);
 	    cout<<"fixed maxc: "<<g.get_L()<<" ";
 	  }
-      else if(inputstr.compare("-rnd2") == 0) g.grphtype=10;   //random Lattice type 2	 
-      else if(inputstr.compare("-CM") == 0) g.grphtype=11;   //Configuration Model      
-	  else if(inputstr.compare("-HCM") == 0) g.grphtype=12;   //Configuration Model	    
+      else if(inputstr.compare("-rnd2") == 0) g.grphtype=10;   //random Lattice type 2	  
       else if(inputstr.compare("-rnd") == 0) g.grphtype=0;   //random graph   
-      //************************Boundary Conditions*******************************
-      else if(inputstr.compare("-bc0") == 0) g.boundarycond=0;   //random graph   
-      else if(inputstr.compare("-bc1") == 0) g.boundarycond=1;   //random graph 
-      else if(inputstr.compare("-bc2") == 0) g.boundarycond=2;   //random graph 
-      //************************Get a Seed for the Graph************************** 
-      else if(inputstr.compare("-seed") == 0){          //random fixed connectivity
-        i++;
-		dummy=atoi(argv[i]);
-	    b.lseedstart=dummy;
-	    cout<<"seed: "<<b.lseedstart<<" ";
-	  }
+      //************************End of Graph Types******************************** 
       //************************Boolean control***********************************
       else if(inputstr.compare("-w") == 0)       	b.write=true;
       else if(inputstr.compare("-dsply") == 0)     	b.dsply=true;
@@ -273,20 +198,6 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       else if(inputstr.compare("-histo") == 0)     	b.histo=true; 
       else if(inputstr.compare("-conv") == 0)     	b.conv=true;  
       else if(inputstr.compare("-debug") == 0)     	b.debug_test=true;
-      else if(inputstr.compare("-debug_graph")==0)  g.set_debug(true);
-      else if(inputstr.compare("-multigraph") == 0) b.style=true; 
-      else if(inputstr.compare("-niterators") == 0) { //this is a dummy right now
-	     i++;      	
-		  b.NUM_ITER=atof(argv[i]); //works
-		  if (b.debug_test) cout<<"NUM_ITER="<<b.NUM_ITER<<std::endl;
-		 // j++;
-	  }
-	  else if(inputstr.compare("-ngraph") == 0) {//number of evolutions
-	     i++;      	
-		  pop.Evolve_STEPS=atof(argv[i]); //works
-		  if (b.debug_test) cout<<"NUM_GRAPH="<<pop.Evolve_STEPS<<std::endl;
-		 // j++;
-	  }
       else if(inputstr.compare("-h") == 0){  //help menu
 		Disease_usage(false); 
 		exit(1);  
@@ -296,9 +207,7 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 		exit(1);  
 	  }	  
       //************************Disease control***********************************      
-      else if(inputstr.compare("-I") == 0)          pop.I=true;   //Immune after sickness    
-	  else if(inputstr.compare("-simple") == 0)     pop.simple=true;   //no random vectors, n_sick counts immunity/death/recovered
-	  //************************Disease Iterators*********************************
+      else if(inputstr.compare("-I") == 0)          pop.I=true;   //Immune after sickness      
       else if(inputstr.compare("-pc") == 0)         ITERCASE=0; //iterate over the connectivity
       else if(inputstr.compare("-virality") == 0)   ITERCASE=1; //iterate over the virality
       else if(inputstr.compare("-fatality") == 0)   ITERCASE=2; //iterate over the fatality
@@ -310,14 +219,6 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 	     ss.str(argv[i]);
 	     ss>>inputfile;
 	     g.grphtype=-1;
-         if (b.debug_test) cout<<"You want to read the file "<<inputfile<<std::endl;
-	  }
-	  else if(inputstr.compare("-seed") ==0){  //read a file in gml format
-	     i++;
-	     ss.clear();
-	     ss>>dummy;
-	     dummy=atoi(argv[i]);
-
          if (b.debug_test) cout<<"You want to read the file "<<inputfile<<std::endl;
 	  }
 	  //*** Read n p p_sick contagin fatality p_Immune lifetime **************
@@ -366,8 +267,7 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 		  j++;
 	  }
 	  else if(j==6){ //sickness duration
-		 // pop.lifetime=atof(argv[i]); //works
-		  pop.p_Recovery=atof(argv[i]); //works
+		  pop.lifetime=atof(argv[i]); //works
 		  if (b.debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
 		  j++;
 	  }	  
@@ -378,7 +278,6 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
          g.set_n(std::pow(g.get_L(),3));
       }   
    }
-   
 	
 	return;
 }

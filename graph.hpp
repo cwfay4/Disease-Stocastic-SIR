@@ -1,15 +1,15 @@
-#ifndef GRAPH_HPP
-#define GRAPH_HPP
+#ifndef GRAPH_H
+#define GRAPH_H
 
-//#include <cmath>
+#include <cmath>
 
-//#include <iostream>
-//#include <fstream>
-//#include <sstream>
-//#include <string>
-//#include <vector>
-//#include "graph.hpp"
-//#include "random.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include "graph.hpp"
+#include "random.hpp"
 
 using namespace std;
 
@@ -76,7 +76,6 @@ class graph {
 	   // int n; //number of nodes in graph
 	    long seed;
 	    int grphtype; //integer used a switch to produce a graph of type
-	    int boundarycond;
 	    double p; //generator edge_prob
 	    double c;  //actual connectivity of graph	    
 	    int nL; //number of leaves
