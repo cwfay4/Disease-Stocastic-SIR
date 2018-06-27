@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <numeric>
 #include "random.hpp"
 #include "graph.hpp"
 
@@ -31,6 +32,8 @@ graph::graph(){
 	nE=0;
 	grphtype=0;
 	p=0;
+	p_w=0;
+	size_co=0;
 	c=0;
 	nL=0;
 	nT=0;
@@ -78,6 +81,15 @@ void graph::set_n(int a){ //set number of nodes in the graph
    num_n=a;
    return;
 }
+void graph::set_n(int a, int size_co){
+	int dumc=(a/size_co);
+	if (a==(dumc*size_co)){
+		num_n=a;
+	}
+	else num_n=(dumc+1)*size_co;
+	if (debug) cout<<"n="<<num_n<<endl;
+	return;
+}
 void graph::set_nE(int a){//set number of edges in the graph
    nE=a;
    return;
@@ -93,6 +105,18 @@ void graph::set_bc(int a){//set the boundary conditions
 void graph::set_debug(bool a){//set the boundary conditions
    debug=a;
    return;
+}
+void graph::set_size_co(int a){
+	size_co=a;
+	return;
+}
+void graph::set_p_w(double a){
+	p_w=a;
+	return;
+}
+void graph::set_num_c(int a){
+	num_c=a;
+	return;
 }
 /************************************************************************************/
 /**** subroutines for finding the total node state Psum and number of frozen ********/
@@ -459,6 +483,155 @@ void graph::GenEdge3(long &idum, int &r1, int &r2){
    return;
 }
 /***********************************************************************************/
+/************Sub-routine for generating CM communities*********************************/
+void graph::build_community_naive(int nstart, int size_co){ //passing size of communities (overloaded)
+	long idum=seed;  //seed for random #
+	double Rand;  //random number
+	int n1, n2;  //set of 2 nodes
+	int counter = nstart; //counter to keep track of how many nodes we've looked at
+	std::vector<double> temp; //temp vector to hold the connectivities
+	temp.clear();
+
+	while (counter <= num_n) { 
+		int nE_w=0; 
+		for (n1=nstart; n1<nstart+size_co-1; n1++){  //checking each node
+			for (n2=n1+1; n2<nstart+size_co; n2++){  //checking every node whose index is higher than n1
+				Rand=ran0(&idum);
+				if (Rand < 1.0){ //makes sure the communities are fully connected subgraphs
+					addEdge(n1,n2);
+					nE_w ++;
+					if(debug) cout<<"add intra-community edge "<<n1<<" "<<n2<<endl;
+				}
+			}
+		}
+	double c_w = 2*(double)nE_w/(double)size_co; //calculating connectivity of individual communities 
+	if(debug) cout<<"c_w = "<<c_w<<endl;
+	temp.push_back(c_w); //adding to vector so we can average
+	counter+=size_co;  //moving on to next community
+	nstart+=size_co;  //changing the starting node
+	}
+	double avg_c_w = accumulate(temp.begin(),temp.end(),0.0)/temp.size(); //average connectivity of all communities
+	cout<<"avg_c_w = "<<avg_c_w<<endl;
+    return;	
+}
+/***********************************************************************************/
+/************Sub-routine for generating HCM communities*********************************/
+void graph::build_community_naive(int nstart, int size_co, double p_w){ //passing size of communities	
+	long idum=seed;  //seed for random #
+	double Rand;  //random number
+	int n1, n2, asize_co;  //set of 2 nodes
+	int counter = nstart; //counter to keep track of how many nodes we've looked at
+	std::vector<double> temp; //temp vector to hold the connectivities
+	temp.clear();
+	int num_c = 0;
+
+	while (counter <= num_n) { 
+		int nE_w=0;
+		Rand=ran0(&idum);
+		double adjust = (Rand*size_co); //introduces varying community sizes
+		int adjusted = adjust;
+		if(debug) cout<<"adjusted = "<<adjust<<endl;
+		Rand=ran0(&idum);
+		if (Rand<.5){
+			asize_co = size_co-adjusted;}
+		else if (Rand>.5){
+			asize_co = size_co+adjusted;}
+		if(debug) cout<<"size = "<<asize_co<<endl;
+		double p_E=p_w/((double)asize_co-1.0); //edge probabiility, modified for communities 
+		for (n1=nstart; n1<nstart+asize_co-1; n1++){  //checking each node
+			for (n2=n1+1; n2<nstart+asize_co; n2++){  //checking every node whose index is higher than n1
+				Rand=ran0(&idum);
+				if (Rand < p_E){ //put in edge n1,n2
+					addEdge(n1,n2);
+					nE_w ++;
+					if(debug) cout<<"add intra-community edge "<<n1<<" "<<n2<<endl;
+				}
+			}
+		}
+	double c_w = 2*(double)nE_w/(double)asize_co; //calculating connectivity of individual communities 
+	if(debug) cout<<"c_w = "<<c_w<<endl;
+	temp.push_back(c_w); //adding to vector so we can average
+	counter+=asize_co;  //moving on to next community
+	nstart+=asize_co;  //changing the starting node
+	num_c++;
+	}
+	double avg_c_w = accumulate(temp.begin(),temp.end(),0.0)/temp.size(); //average connectivity of all communities
+	cout<<"avg_c_w = "<<avg_c_w<<"["<<p_w<<"]"<<endl;
+	set_n(counter);
+	set_num_c(num_c);
+	if(debug) cout<<num_c<<endl;
+    return;	
+}
+/***********************************************************************************/
+/****** CM Random graph   *********************************************************/
+void graph::build_random_CM(int size_co){
+	long idum=seed;
+	int num_c = (num_n)/(size_co);
+	double dm=(double)num_c*p/2.0;  //num of nodes times prob of edge divided by two: number of edges
+	double dm_max=((double)(num_c*(num_c-1)))/2.0; //number of edges max
+    int m=int(dm+0.5), mmax=int(dm_max+0.5);
+    bool no_edge=true;
+    int n1, n2;
+    
+    populate_graph(); //calling the function to populate the graph	
+	build_community_naive(0, size_co); //building the communities
+	
+	cout<<" N:"<<num_n<<" no. Edges:"<<m<<" no. E max:"<<mmax<<" ";
+	if (m>mmax) m=mmax;
+	int nE_b=0; //# of edges b/n communities
+	while (nE_b<m) {
+		GenEdge(idum, n1, n2); //generate a head and tail set, node 1 and node 2 being placeholders
+		no_edge=true;
+		for(int j=0; j<nodes[n1].edges.size(); j++){
+			if (nodes[n1].edges[j]==n2) no_edge=false;
+		}
+		if (no_edge) { //if no_edge is true, generate an edge between node 1 and node 2; then start again at line 475
+			addEdge(n1,n2); //adds edge incriments nE++;
+			nE_b++;
+			if (debug) cout<<"Intercommunity edge added"<<n1<<" "<<n2<<endl;
+		}
+	}
+	double c_b = (2.0*(double)nE_b)/(double)num_c;
+	cout<<"c_b = "<<c_b<<"["<<p<<"]"<<endl;	
+    cout<<"End of build random _ CM no. Edges:"<<nE<<" "<<endl;
+    return;	
+}
+/***********************************************************************************/
+/****** HCM Random graph   *********************************************************/
+void graph::build_random_HCM(int size_co, double p_w){  //nkernal is the size of each community
+	
+	populate_graph(); //calling the function to populate the graph	
+	build_community_naive(0, size_co, p_w); //building the communities
+	
+	long idum=seed;
+	//int num_c = (num_n)/(size_co);
+	double dm=(double)num_c*p/2.0;  //num of nodes times prob of edge divided by two: number of edges
+	double dm_max=((double)(num_c*(num_c-1)))/2.0; //number of edges max
+    int m=int(dm+0.5), mmax=int(dm_max+0.5);
+    bool no_edge=true;
+    int n1, n2;
+    
+	cout<<" N:"<<num_n<<" no. Edges:"<<m<<" no. E max:"<<mmax<<" ";
+	if (m>mmax) m=mmax;
+	int nE_b=0; //# of edges b/n communities
+	while (nE_b<m) {
+		GenEdge(idum, n1, n2); //generate a head and tail set, node 1 and node 2 being placeholders
+		no_edge=true;
+		for(int j=0; j<nodes[n1].edges.size(); j++){
+			if (nodes[n1].edges[j]==n2) no_edge=false;
+		}
+		if (no_edge) { //if no_edge is true, generate an edge between node 1 and node 2; then start again at line 475
+			addEdge(n1,n2); //adds edge incriments nE++;
+			nE_b++;
+			if (debug) cout<<"Intercommunity edge added"<<n1<<" "<<n2<<endl;
+		}
+	}
+	double c_b = (2.0*(double)nE_b)/(double)num_c;
+	cout<<"c_b = "<<c_b<<"["<<p<<"]"<<endl;	
+    cout<<"End of build random _ HCM no. Edges:"<<nE<<" "<<endl;
+    return;	
+}
+/***********************************************************************************/
 /******** Generate m random edges in a graph ***************************************/
 void graph::build_random(){
 	long idum=seed;
@@ -767,6 +940,35 @@ void graph::build_sclfr_grph(){
 	        if (Rand < p_E && nodes[n1].edges.size()<100 && nodes[n1].edges.size()<100){ //put in edge n1,n2
 				addEdge(n1,n2);
 				if(debug) cout<<"add edge "<<n1<<" "<<n2<<" "<<nE<<endl;
+			}
+	    } 			
+    } 
+
+   return;
+}
+/********************************************************************/
+/** builds power law HCM network (scale-free HCM)                  **/
+/********************************************************************/
+void graph::build_sclf_HCM(int size_co, double p_w){
+   
+   populate_graph();
+   build_community_naive(0, size_co, p_w);
+   
+   //int num_c = (num_n)/(size_co);
+   double p_E=c/(double)num_c;
+   float Rand;
+   long idum=seed;     
+
+   if(debug) cout<<" populated and communities built"<<endl;	
+   if(debug) cout<<" prepare to add inter-community edges "<<endl;	  	
+	for (int n1=1; n1<num_n; n1++){ //for all nodes
+		for (int n2=0; n2<n1; n2++){ //for all nodes below n1 
+	        Rand=ran2(&idum);  
+	        if (nE == 0) p_E=1;
+	        else p_E=prob_PI(n2);
+	        if (Rand < p_E && nodes[n1].edges.size()<100 && nodes[n1].edges.size()<100){ //put in edge n1,n2
+				addEdge(n1,n2);
+				if(debug) cout<<"add inter-community edge "<<n1<<" "<<n2<<" "<<nE<<endl;
 			}
 	    } 			
     } 
@@ -1148,8 +1350,23 @@ void graph::build_graph(bool write){
 		  build_random_fixed();
           if(debug)cout<<"built random fixed"<<endl;
 		  
-      break;		  
-	  }      
+      	  break;
+	  }
+	  case 10:{ //-hcm
+	  	  build_random_HCM(size_co, p_w);
+	  	  if(debug) cout<<"Built Random HCM"<<endl;
+		  break;		  
+	  }  
+	  case 11:{  //-hcmsclf
+	  	  build_sclf_HCM(size_co, p_w);
+	  	  if(debug) cout<<"Built Scale-free HCM"<<endl;
+		  break;
+	  } 
+	  case 12:{  //-cm
+	  	  build_random_CM(size_co);
+	  	  if(debug) cout<<"Built Random CM"<<endl;
+		  break;
+	  }   
       default:{
 		  build_triangular_lattice();
          if(debug)cout<<"built pt"<<endl; 
