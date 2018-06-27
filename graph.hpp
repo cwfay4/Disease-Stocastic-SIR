@@ -1,15 +1,15 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <cmath>
+//#include <cmath>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include "graph.hpp"
-#include "random.hpp"
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
+//#include <string>
+//#include <vector>
+//#include "graph.hpp"
+//#include "random.hpp"
 
 using namespace std;
 
@@ -72,15 +72,23 @@ class graph {
 	    void build_fcc();                  //build a FCC lattice
 	    void build_square_lattice();       //build a squarte lattice
 	    void build_cubic();                //build a cubic lattice
+	    void build_community_naive(int nstart, int size_co, double p_w);  //build communities connected randomly
+	    void build_community_naive(int nstart, int size_co);
+	    void build_random_HCM(int size_co, double p_w); //builds HCM random network
+	    void build_random_CM(int size_co);
+	    void build_sclf_HCM(int size_co, double p_w); //builds HCM scale-free network
 	public:
 	   // int n; //number of nodes in graph
 	    long seed;
 	    int grphtype; //integer used a switch to produce a graph of type
 	    double p; //generator edge_prob
+	    double p_w; //generator for edge w/n community
 	    double c;  //actual connectivity of graph	    
 	    int nL; //number of leaves
 	    int nT; //number of triangles (incident on boundary of graph)
 	    int bc;
+	    int size_co; //size of communities
+	    int num_c; //sets number of communites in case of varying community sizes
 	    std::vector<node> nodes;	    
 	    graph();
 	    graph(int); //initial based off the number of nodes
@@ -98,10 +106,14 @@ class graph {
 	    void flip();
 	    void StateHistogram(double numbox, std::string ss);
 	    void set_n(int);
+	    void set_n(int,int);
 	    void set_nE(int);
 	    void set_L(int);
 	    void set_bc(int);
 	    void set_debug(bool);
+	    void set_size_co(int);
+	    void set_p_w(double);
+	    void set_num_c(int);
 	    void eraseEdge(int head, int tail);  //remove an edge from the graph
 	    void write_gml(string);//write a graph saved in gml format
 	    void write_gml_to_screen();//write a graph saved in gml format to the screen
