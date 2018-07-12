@@ -23,13 +23,13 @@ OverrideOutputName=
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
-CommandLine=-debug -debug_graph -sclf -ngraph 3 -pc 1000 .9 .01 .03 .08 0 10
+CommandLine=-hcm 10 5 -ngraph 20 -pc 100000 .9 .01 .03 .08 0 10
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000001000000
-UnitCount=18
+UnitCount=15
 
 [VersionInfo]
 Major=1
@@ -51,26 +51,16 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit5]
-FileName=Disease_m.cpp
+FileName=Disease_manual.txt
 CompileCpp=1
 Folder=
-Compile=1
-Link=1
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=diseasePOP.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit9]
 FileName=diseasePOP.hpp
 CompileCpp=1
 Folder=
@@ -80,8 +70,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit9]
+FileName=graph.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit12]
-FileName=graph.hpp
+FileName=random.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -91,22 +91,24 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=graph.o
+FileName=random.hpp
 Folder=
-Compile=0
-Link=0
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+CompileCpp=1
 
 [Unit14]
-FileName=Makefile
+FileName=stats.cpp
 Folder=
-Compile=0
-Link=0
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+CompileCpp=1
 
 [Unit16]
 FileName=random.hpp
@@ -248,24 +250,16 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=Disease_basic_utils.o
+FileName=Disease_m.cpp
 Folder=
-Compile=0
-Link=0
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+CompileCpp=1
 
 [Unit6]
-FileName=Disease_manual.txt
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit7]
 FileName=Disease_manual.txt~
 Folder=
 Compile=0
@@ -274,8 +268,29 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit7]
+FileName=diseasePOP.cpp
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=1
+
 [Unit10]
-FileName=diseasePOP.o
+FileName=graph.hpp
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=1
+
+[Unit11]
+FileName=Makefile
+CompileCpp=1
 Folder=
 Compile=0
 Link=0
@@ -283,18 +298,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
-FileName=graph.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit15]
-FileName=random.cpp
+FileName=stats.hpp
 CompileCpp=1
 Folder=
 Compile=1

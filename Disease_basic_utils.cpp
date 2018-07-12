@@ -251,9 +251,35 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 	    g.set_L(dummy);
 	    cout<<"fixed maxc: "<<g.get_L()<<" ";
 	  }
-      else if(inputstr.compare("-rnd2") == 0) g.grphtype=10;   //random Lattice type 2	 
-      else if(inputstr.compare("-CM") == 0) g.grphtype=11;   //Configuration Model      
-	  else if(inputstr.compare("-HCM") == 0) g.grphtype=12;   //Configuration Model	    
+      else if(inputstr.compare("-hcm") == 0) { //heirarchigal configuration model
+      	g.grphtype=10;
+      	ss.clear();
+	  	i++;
+	  	ss>>dummy;
+	  	dummy=atoi(argv[i]);
+	  	g.set_size_co(dummy);
+	  	ss.clear();
+	  	if(b.debug_test) {
+		  cout<<"average size of community = "<<g.size_co<<endl;}
+	  	i++;
+	  	g.p_w=atof(argv[i]);
+	  	if(b.debug_test) {
+		  cout<<"probability of an edge = "<<g.p_w<<endl;}
+		ss.clear();
+	  }	 
+      // if(inputstr.compare("-CM") == 0) g.grphtype=11;   //Configuration Model      
+	  else if(inputstr.compare("-cm") == 0) {
+	  	g.grphtype=12;
+   	    ss.clear();
+	  	i++;
+	  	ss>>dummy;
+	  	dummy=atoi(argv[i]);
+	  	g.set_size_co(dummy);
+	  	ss.clear();
+	  	if(b.debug_test) {
+		  cout<<"community size = "<<g.size_co<<endl;}
+		ss.clear();
+	  }	    
       else if(inputstr.compare("-rnd") == 0) g.grphtype=0;   //random graph   
       //************************Boundary Conditions*******************************
       else if(inputstr.compare("-bc0") == 0) g.boundarycond=0;   //random graph   
