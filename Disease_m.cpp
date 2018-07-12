@@ -170,7 +170,7 @@ int main(int argc, char **argv){
 	           g.build_graph(false);
 		    }   
 	        if(b.debug_test)cout<<" type: "<<g.grphtype<<" ITERNUM "<<dn<<" n: "<<g.get_n()<<" nE: "<<g.get_nE()<<" nE: "<<g.calc_nE()<<" c: "<<g.get_c()<<endl;
-	  
+	  		//if(true) cout<<"Number of Edges"<<g.get_nE()<<endl;
 	      //vce_precon(g, lseed[1], pop);
 	      //disease_pop(g, pop, lseed[2]);
 	      

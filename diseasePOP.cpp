@@ -393,10 +393,14 @@ void dPOP::pop_evolve(graph& g, long seed2, iteration_stats& convergence_ave){
 	     output.close();
       }
       if (Evolve_STEPS>1){//we want this to be an average of the values over each iteration.
-            convergence_ave.increase_element(it, 0, (double)n_healthy/dn);  
+            convergence_ave.increase_element(it, 0, (double)n_healthy/dn); 
+			//cout<<"h "<<(double)n_healthy/dn<<endl;
             convergence_ave.increase_element(it, 1, (double)n_sick/dn);  
-		    convergence_ave.increase_element(it, 2, (double)n_immune/dn);  
+            //cout<<"s "<<(double)n_sick/dn<<endl;
+		    convergence_ave.increase_element(it, 2, (double)n_immune/dn);
+			//cout<<"i "<<(double)n_immune/dn<<endl;  
 			convergence_ave.increase_element(it, 3, (double)n_dead/dn);  
+			//cout<<"d "<<(double)n_dead/dn<<endl;
 	  }
      // if (g.get_debug()) cout<<n_healthy<<" "<<n_sick<<" "<<n_immune<<endl;
       if (n_sick_max<n_sick){
