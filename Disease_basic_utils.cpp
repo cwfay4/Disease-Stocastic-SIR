@@ -336,6 +336,7 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       else if(inputstr.compare("-virality") == 0)   ITERCASE=1; //iterate over the virality
       else if(inputstr.compare("-fatality") == 0)   ITERCASE=2; //iterate over the fatality
       else if(inputstr.compare("-lifetime") == 0)   ITERCASE=3; //iterate over the lifetime
+      else if(inputstr.compare("-recovery") == 0)   ITERCASE=4; //iterate over the p_Recovery     
       //************************read graph ***********************************       
       else if(inputstr.compare("-rgml") ==0||inputstr.compare("-r") ==0){  //read a file in gml format
 	     i++;

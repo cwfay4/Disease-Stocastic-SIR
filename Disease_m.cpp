@@ -124,7 +124,15 @@ int main(int argc, char **argv){
 		 ITERSTOP=0.1*(double)pop.POP_STEPS;
 		 ITERSTEP=0.001*(double)pop.POP_STEPS;
          break;
-      }         
+      }  
+	  case 4:{ //iterate over p_Recovery (assuming a lifetime)
+	  	ITERSTART = 0.1;
+	  	ITERSTOP = 1.0;
+	  	ITERSTEP = 0.1;
+	  	pop.p_Recovery=ITERSTART;
+	  	if (pop.ltype==1) pop.ltype=0; // Make sure pop_evolve uses the lifetime and p_Recovery
+		break;
+	  }       
       default:{ //iterate over p
 		 //ITERSTOP=g.p;
 		 //g.p=0.1;
@@ -264,7 +272,12 @@ int main(int argc, char **argv){
                pop.lifetime+=ITERSTEP;
                ITERSTART=pop.lifetime;
                break;
-            }         
+            }      
+            case 4:{//iterate over p_Recovery
+               pop.p_Recovery+=ITERSTEP;
+               ITERSTART=pop.p_Recovery;
+               break;
+            } 			   
             default:{//iterate over p 
                g.p+=ITERSTEP;
                ITERSTART=g.p;
