@@ -115,6 +115,10 @@ int main(int argc, char **argv){
          break;
       }        
       case 3:{  //iterate over lifetime (make lifetime a function of the number of time steps
+         if (pop.ltype==0) {
+		    pop.ltype=1; //this checks to make sure that you are iterating over the lifetime.
+            pop.p_Recovery=pop.lifetime;
+         }
 		 pop.lifetime=0.01*(double)pop.POP_STEPS;
 		 ITERSTART=pop.lifetime;
 		 ITERSTOP=0.1*(double)pop.POP_STEPS;
@@ -133,6 +137,24 @@ int main(int argc, char **argv){
          break;
       }
    }
+   
+    //I am putting this here so that if you are using ltype parameters 
+	//for p_Recovery and liftime are set correctly.
+   	switch (pop.ltype){
+        case 1:{ //only a lifetime
+        	pop.p_Recovery=1.1; //this ensures 100% recovery after the lifetime
+		    break;
+	    }
+//	    case 2:{ //lifetime and p_Recovery  //skipped because no parameters need to be adjusted
+//	   	    pop.pop_evolve(g, lseed[2]);	  	
+//		    break;
+//	    }
+   	    default:{ //only p_Recovery
+   	    	pop.lifetime=0; 
+			break;
+	    }   	
+    }
+   
    
    if (b.debug_test) cout<<"Initial iteration parameters set"<<endl;
 
@@ -163,6 +185,8 @@ int main(int argc, char **argv){
        if (b.debug_test) cout<<"Iteration loop built graph"<<endl;   
        // if (pop.Evolve_STEPS>1){ //we have more than one graph for each iterator value, thus we will average over each pop.evolve step
        iteration_stats microdata(pop.POP_STEPS, 4); //this will save the values for each pop.evolve step per one iteration;
+       
+       
 	    
 	   for (int i=0; i<pop.Evolve_STEPS; i++){  //how many graphs do we average over per each iterator
 	        if (b.style==true){
@@ -173,11 +197,15 @@ int main(int argc, char **argv){
 	  		//if(true) cout<<"Number of Edges"<<g.get_nE()<<endl;
 	      //vce_precon(g, lseed[1], pop);
 	      //disease_pop(g, pop, lseed[2]);
-	      
-	        pop.precondition(g, lseed[1]);
-	      
+	        int safety=0;
+	        do {  //this is to ensure that you have atleast one sick node the safety makes sure this is not an infinte loop;
+	        	pop.precondition(g, lseed[1]);
+	        	safety++;
+			} while ((pop.n_sick<1)&&(safety<100));
+	        	      
 	        if(b.debug_test)cout<<" precondition finished:  n_sick "<<pop.n_sick<<" "<<pop.n_healthy<<" "<<pop.n_immune<<endl;
 	        
+             
 	        if (pop.n_sick>=1) { //just incase there is no one sick after the precondition
 	            	            
 			    if (pop.Evolve_STEPS<=1) {
