@@ -28,6 +28,7 @@ dPOP::dPOP () {
    p_sick =0;
    contagin =0;
    fatality =0;
+   ltype=0;
    debug=false;
    I=false;
    randomvectors=false;
@@ -46,6 +47,7 @@ dPOP::dPOP (int a, int b, int c, int d, double e, double f, double g, double h, 
    contagin =g;
    fatality =h;   
    lifetime=life; 
+   ltype=0;
    I=b1;
    simple=b2;
    randomvectors=false;

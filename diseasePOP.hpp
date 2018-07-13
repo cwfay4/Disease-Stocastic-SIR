@@ -28,6 +28,7 @@ class dPOP{
 	   int n_dead;
 	   int POP_STEPS;  //number of time steps
 	   int Evolve_STEPS; //number of similar evolutions
+	   int ltype;  //lifetime, probabilty or both.
 	   double lifetime;
 	   double p_Immune;
 	   double p_sick;

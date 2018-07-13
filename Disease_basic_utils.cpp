@@ -324,6 +324,13 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
       //************************Disease control***********************************      
       else if(inputstr.compare("-I") == 0)          pop.I=true;   //Immune after sickness    
 	  else if(inputstr.compare("-simple") == 0)     pop.simple=true;   //no random vectors, n_sick counts immunity/death/recovered
+      else if(inputstr.compare("-l") == 0)          pop.ltype=1;   //recover after lifetime  
+	  else if(inputstr.compare("-lb") == 0)         {
+	        pop.ltype=2;   //recover with probability after lifetime  
+	        i++; 
+	        pop.lifetime=atof(argv[i]); //works
+		    if (b.debug_test) cout<<"lifetime="<<pop.lifetime<<std::endl;
+	    }
 	  //************************Disease Iterators*********************************
       else if(inputstr.compare("-pc") == 0)         ITERCASE=0; //iterate over the connectivity
       else if(inputstr.compare("-virality") == 0)   ITERCASE=1; //iterate over the virality
@@ -394,7 +401,8 @@ void inputprocessing(int& argc, char **argv, graph& g, dPOP& pop, boolcat& b, in
 	  else if(j==6){ //sickness duration
 		 // pop.lifetime=atof(argv[i]); //works
 		  pop.p_Recovery=atof(argv[i]); //works
-		  if (b.debug_test) cout<<"lifetime="<<ss.str()<<" "<<pop.lifetime<<std::endl;
+		  if (pop.ltype==1) pop.lifetime=pop.p_Recovery;
+		  if (b.debug_test) cout<<"p_Recovery="<<ss.str()<<" "<<pop.p_Recovery<<std::endl;
 		  j++;
 	  }	  
 	  //**** if bb graph give size of kernal *********************************
