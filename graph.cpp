@@ -1,3 +1,6 @@
+
+#include <cmath>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -30,6 +33,7 @@ graph::graph(){
 	num_n=0;
 	nE=0;
 	grphtype=0;
+	boundarycond=0;
 	p=0;
 	c=0;
 	nL=0;
@@ -40,6 +44,7 @@ graph::graph(int a){
 	num_n=a;
 	nE=0;
 	//grphtype=0;
+	//boundarycond=0;
 	p=0;
 	c=0;
 	nL=0;
@@ -1089,7 +1094,7 @@ void graph::build_graph(bool write){
 	  case 0:{
          if (p/((double)num_n-1)>.75) build_random_naive();
          else build_random();
-         if(debug)cout<<"built random"<<" n: "<<get_n()<<" nE: "<<get_nE()<<endl;
+         if(true)cout<<"built random"<<" n: "<<get_n()<<" nE: "<<get_nE()<<endl;
          break;
       }
       case 1:{ //-pt

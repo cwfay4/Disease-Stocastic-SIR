@@ -23,13 +23,13 @@ OverrideOutputName=
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
-CommandLine=1000 1.1 .001 .2 .1 0 .1
+CommandLine=-I 100000 5 .01 .35 .45 0 10
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=17
+UnitCount=18
 
 [VersionInfo]
 Major=1
@@ -61,7 +61,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=Disease_manual.txt
+FileName=Disease_Conv.csv
 Folder=
 Compile=0
 Link=0
@@ -70,6 +70,16 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
+FileName=Disease_manual.txt~
+CompileCpp=1
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
 FileName=diseasePOP.cpp
 CompileCpp=1
 Folder=
@@ -79,28 +89,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
-FileName=diseasePOP.hpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit11]
-FileName=graph.cpp
+FileName=diseasePOP.o
 Folder=
-Compile=1
-Link=1
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
 [Unit12]
-FileName=graph.hpp
+FileName=graph.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -110,6 +110,16 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
+FileName=graph.hpp
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=1
+
+[Unit14]
 FileName=graph.o
 Folder=
 Compile=0
@@ -119,7 +129,7 @@ OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
-[Unit14]
+[Unit15]
 FileName=Makefile
 Folder=
 Compile=0
@@ -129,18 +139,8 @@ OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
-[Unit15]
-FileName=random.cpp
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-CompileCpp=1
-
 [Unit16]
-FileName=random.hpp
+FileName=random.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -150,7 +150,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=Disease.cpp
+FileName=random.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -287,10 +287,10 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=diseasePOP.o
+FileName=diseasePOP.hpp
 Folder=
-Compile=0
-Link=0
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
@@ -307,7 +307,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=Disease_manual.txt~
+FileName=Disease_manual.txt
 Folder=
 Compile=0
 Link=0

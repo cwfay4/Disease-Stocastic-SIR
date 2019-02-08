@@ -3,7 +3,7 @@
 #
 #
 #all: mkgrph LoPR_ma Disease
-all: mkgrph Disease Disease_m
+all: mkgrph Disease Disease_c
  
 COBJS=tri_prcltn.o graph.o cluster.o HK.o grphfns.o crprcfns.o clstrfns.o random.o
 OBJS=mkgrph.o graph.o cluster.o HK.o random.o

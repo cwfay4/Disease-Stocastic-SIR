@@ -187,8 +187,8 @@ int main(int argc, char *argv[]){
    }
    
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<endl;
-   cout<<"p_Immune="<<pop.p_Immune<<" lifetime= "<<pop.lifetime<<"p_Recovery= "<<pop.p_Recovery<<endl;
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<"p_Recovery="<<pop.p_Recovery<<endl;
+   cout<<" lifetime= "<<pop.lifetime<<endl;
 //*****************************************************************        
    std::string gt="p", rnt="-r2", sbc="f";
    std::ostringstream strs;
@@ -244,8 +244,8 @@ int main(int argc, char *argv[]){
    double c=g.get_c();
       if (debug_test) cout<<g.c<<std::endl;
    cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick;
-   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<endl;
-   cout<<"p_Immune="<<pop.p_Immune<<" p_Recovery= "<<pop.p_Recovery<<endl;
+   cout<<" contagin= "<<pop.contagin<<" fatal
+   ity="<<pop.fatality<<" p_Immune="<<pop.p_Immune<<endl;
 //   if (false) {
 //      cout<<n<<" "<<p<<" "<<c<<" "<<nE<<" "<<lseed[0]<<" "<<lseed[1]<<" "<<lseed[2];        
 //   }
@@ -258,11 +258,9 @@ int main(int argc, char *argv[]){
    pop.pop_evolve(g, lseed[2]);   
    if (debug_test) cout<<"disease pop finished"<<std::endl;   
    
-   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE();
-   cout<<" p_sick= "<<pop.p_sick<<" p_sick_max= "<<pop.n_sick_max;
-   cout<<" contagin= "<<pop.contagin<<endl;
-   cout<<"fatality="<<pop.fatality<<" p_Immune= "<<pop.p_Immune;
-   cout<<" lifetime= "<<pop.lifetime<<" p_Recovery= "<<pop.p_Recovery<<endl;
-
+   cout<<"n= "<<g.get_n()<<" c= "<<g.get_c()<<"["<<g.p<<"]"<<" nE= "<<g.get_nE()<<" p_sick= "<<pop.p_sick<<" p_sick_max= "<<pop.n_sick_max;
+   cout<<" contagin= "<<pop.contagin<<" fatality="<<pop.fatality<<" p_Immune="<<pop.p_Immune;
+   cout<<" lifetime= "<<pop.lifetime<<"p_Recovery="<<pop.p_Recovery<<endl;
+   
    return 0;
 }
