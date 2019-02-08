@@ -56,11 +56,14 @@ void Stats::set_NumberSample(double a){
 void Stats::add_data(double datum){ //dsamp is the number of graphs being run over
    //cout<<j<<endl;
    	if(false)  cout<<"stats add data "<<value<<" "<<datum<<endl;
-
+   //running count of value, value_sq, dsamp.  previous #+new one
    value=value+datum; //sum of datum : should be an average
-   value_sq=value_sq+value*value; //sum of square of data
+   //if(true) cout<<"value "<<value<<endl;
+   value_sq=value_sq+(datum*datum); //sum of square of data
+   //if(true) cout<<"value_sq "<<value_sq<<endl;
    dsamp=dsamp+1; //running count of the number of data points
-   average_value=value/dsamp;
+   average_value=value/dsamp; //running avg of value
+   //if(true) cout<<"avg_value "<<average_value<<endl;
    return;
 }
 double Stats::get_average(){
@@ -78,8 +81,11 @@ int Stats::get_NumberSample(){
 }
 double Stats::standard_error(){
 	double av_sq=value_sq/dsamp;
-	double var=sqrt(abs(value_sq-(average_value*average_value))/(dsamp-1));//calculate std error;
+	//if(true) cout<<"av_sq "<<av_sq<<endl;
+	double var=sqrt(abs(av_sq-(average_value*average_value))/(dsamp-1));
+	//double var=sqrt(abs(value_sq-(average_value*average_value))/(dsamp-1));//calculate std error;
 	std_error=var;
+	//if (true) cout<<"std_error"<<var<<endl;
 	return var;
 }
 double Stats::standard_error(double dsamp1){
@@ -99,7 +105,7 @@ group_stats::group_stats(int a){
 	return;
 }
 void group_stats::addcategory(){
-	//add a new elment to stats_list
+	//add a new elment to stats_group
     Stats Stat1;
 	stats_group.push_back(Stat1);
 	
@@ -228,10 +234,11 @@ double iteration_stats::get_element(int stepvalue, int a){
 void iteration_stats::output_elements(int stepvalue, int a, std::string oname){
 	   std::ofstream output(oname.c_str(), std::ofstream::app);
 	   
+	   //cout<<"size "<<it_stats_vect.size()<<endl;
 	   for (int k=0;k<it_stats_vect.size();k++){
-	   	   output<<k<<" ";
+	   	   output<<k<<",";
 	       for (int j=0;j<it_stats_vect[k].stats_group.size();j++){
-	       	   output<<it_stats_vect[k].stats_group[j].get_average()<<" "<<it_stats_vect[k].stats_group[j].standard_error()<<" ";
+	       	   output<<it_stats_vect[k].stats_group[j].get_average()<<","<<it_stats_vect[k].stats_group[j].standard_error()<<",";
 		   }
 	   	   output<<endl;
 	   	   	   	
