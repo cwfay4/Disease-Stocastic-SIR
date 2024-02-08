@@ -3,14 +3,14 @@
 #
 #
 #all: mkgrph LoPR_ma Disease
-all: mkgrph Disease Disease_c
+all: mkgrph Disease Disease_m
  
 COBJS=tri_prcltn.o graph.o cluster.o HK.o grphfns.o crprcfns.o clstrfns.o random.o
 OBJS=mkgrph.o graph.o cluster.o HK.o random.o
 LOBJS= LoPR_ma.o LoPR_alg_o.o random.o graph.o defaults.o LoPR_basic_utils.o
 LoOBJS= LoPR.o LoPR_alg_o.o random.o graph.o defaults.o LoPR_basic_utils.o
-DOBJS= Disease.o diseasePOP.o random.o graph.o Disease_basic_utils.o
-DMOBJS= Disease_m.o diseasePOP.o random.o graph.o Disease_basic_utils.o
+DOBJS= Disease.o diseasePOP.o random.o graph.o Disease_basic_utils.o stats.o
+DMOBJS= Disease_m.o diseasePOP.o random.o graph.o Disease_basic_utils.o stats.o
 
 #CC=g++296
 #CC=g++-4.9

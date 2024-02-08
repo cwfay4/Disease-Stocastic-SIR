@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:basic_utils.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:cluster.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:cluster.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:crprcfns_a.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:cvrfns_a.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:defaults.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:Disease_basic_utils.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:Disease_basic_utils.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:Disease_c.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:Disease_m.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:Disease.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:diseasePOP.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:diseasePOP.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:graph.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:graph.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:HK.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:HK.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR_alg_o.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR_alg_o.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR_basic_utils.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR_basic_utils.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR_ma.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPR.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:LoPRextra.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:mkgrph.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:random.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:random.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:stats.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:stats.hpp">
+   </FileRef>
+   <FileRef
+      location = "group:tri_prcltn_full.cpp">
+   </FileRef>
+   <FileRef
+      location = "container:Makefile">
+   </FileRef>
+</Workspace>

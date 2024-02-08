@@ -59,7 +59,7 @@ void HK(graph g, cluster_stat cluster_data){
 	     cluster[size_n+1]++;     //in the cluster vector element (n+1) is the number of isolated clusters. 
 	  }
 	  else {  //node n1 has edges
-		 if (label[n1]=-2) { //unlabeled
+		 if (label[n1]==-2) { //unlabeled
 			 label[n1]=n1;
 		     cluster_data.num_cluster++;
 		 }
@@ -67,7 +67,7 @@ void HK(graph g, cluster_stat cluster_data){
             for(j=0; j<g.nodes[n1].edges.size(); j++){ /* for each node n2 connected to n1*/ 
                n2=g.nodes[n1].edges[j]; //find node n2  //we only need to check the clusters of nodes n2<n1
                if (n2<n1) {//label n2 with the label of n1
-                  if (label[n2]=-2){
+                  if (label[n2]==-2){
 					 label[n2]=n1_cannonical; //n2 not in a cluster put in cluster of n1
 				     }
 			      n2_cannonical=HK_find(n2, label); //find n2_cannonical  

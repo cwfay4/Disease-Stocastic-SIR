@@ -19,7 +19,7 @@
 #include <time.h>
 
 #include "random.hpp"
-#include "Stats.hpp"
+#include "stats.hpp"
 #include "graph.hpp"
 #include "diseasePOP.hpp"
 #include "Disease_basic_utils.hpp"
